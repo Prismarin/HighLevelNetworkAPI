@@ -18,6 +18,10 @@ public class HighLevelNetworkAPI {
     protected ArrayList<IOnConnectionClosed> onConnectionClosedList;
     protected ArrayList<IOnConnectionFailed> onConnectionFailedList;
 
+    /**
+     *
+     * @param object is the object in which there are all the remote methods
+     */
     public HighLevelNetworkAPI(Object object) {
         this.netObject = object;
         onConnectionSucceededList = new ArrayList<>();
@@ -55,14 +59,35 @@ public class HighLevelNetworkAPI {
      */
     public void send(long peerId, String methodName, String... strings) {}
 
+    /**
+     *
+     * used for clients when connected to the server - argument for onConnectionSucceeded = 0
+     * used for server when a client just connected - argument for onConnectionSucceeded = peerId or given id from a database
+     *
+     * @param onConnectionSucceeded method reference
+     */
     public void addOnConnectionSucceeded(IOnConnectionSucceeded onConnectionSucceeded) {
         onConnectionSucceededList.add(onConnectionSucceeded);
     }
 
+    /**
+     *
+     * only used for clients, when failed to connect to given host and port
+     *
+     * @param onConnectionFailed method reference
+     */
     public void addOnConnectionFailed(IOnConnectionFailed onConnectionFailed) {
-        onConnectionFailedList.add(onConnectionFailed);
+        if (net instanceof Client)
+            onConnectionFailedList.add(onConnectionFailed);
     }
 
+    /**
+     *
+     * used for clients when the server has closed the connection or crashed
+     * used for server when a client has disconnected and does not respond to pings anymore
+     *
+     * @param onConnectionClosed method reference
+     */
     public void addOnConnectionClosed(IOnConnectionClosed onConnectionClosed) {
         onConnectionClosedList.add(onConnectionClosed);
     }
