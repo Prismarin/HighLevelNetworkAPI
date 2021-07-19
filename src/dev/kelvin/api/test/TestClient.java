@@ -16,7 +16,7 @@ public class TestClient {
 
     public TestClient() {
         hln = new HighLevelNetworkAPI(this);
-        hln.createClient();
+        hln.createClient("", 1235);
     }
 
     public void test() throws InvocationTargetException, IllegalAccessException {

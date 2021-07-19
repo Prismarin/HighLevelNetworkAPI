@@ -57,12 +57,12 @@ public class HighLevelNetworkAPI {
 
     public void createServer() {
         if (net == null)
-            net = new Client(netObject);
+            net = new Server(netObject, this);
     }
 
-    public void createClient() {
+    public void createClient(String address, int port) {
         if (net == null)
-            net = new Server(netObject);
+            net = new Client(netObject, this, address, port);
     }
 
     /**
@@ -118,6 +118,13 @@ public class HighLevelNetworkAPI {
         onConnectionClosedList.add(onConnectionClosed);
     }
 
+    /**
+     *
+     * @param methodName the name of the method that will be called
+     * @param args the arguments for the method
+     * @throws InvocationTargetException when the method cant be invoked
+     * @throws IllegalAccessException when the method that is called cant be accessed because it is not public
+     */
     public void call(String methodName, String... args) throws InvocationTargetException, IllegalAccessException {
         Method methodToRun = getMethodByName(methodName);
         if (methodToRun != null) {

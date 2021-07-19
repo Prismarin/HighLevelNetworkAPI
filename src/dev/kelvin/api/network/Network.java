@@ -1,21 +1,35 @@
 package dev.kelvin.api.network;
 
-import java.net.DatagramSocket;
+import dev.kelvin.api.HighLevelNetworkAPI;
 
 public abstract class Network {
 
     protected Object netObject;
-    protected DatagramSocket udp_socket;
+    protected HighLevelNetworkAPI hln;
 
+    private boolean running;
 
-    public Network(Object object) {
+    protected Thread udpListener, tcpListener;
+
+    public Network(Object object, HighLevelNetworkAPI hln) {
         this.netObject = object;
+        this.hln = hln;
     }
 
-    public void send(long peerId, String methodName, String...args) {}
-
-    public void receive() {
-
+    public void start() {
+        if (!running) {
+            running = true;
+            udpListener = new Thread(this::listenUdp);
+            tcpListener = new Thread(this::listenTcp);
+        }
     }
+
+    public abstract void send_udp(long uuid, String methodName, String...args);
+
+    public abstract void send_tcp(long uuid, String methodName, String...args);
+
+    protected abstract void listenUdp();
+
+    protected abstract void listenTcp();
 
 }
