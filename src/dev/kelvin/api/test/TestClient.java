@@ -10,7 +10,7 @@ public class TestClient {
         //hln.createClient();
     }
 
-    @Remote
+    @Remote(1)
     public void dosth(String printThis) {
         System.out.println(printThis);
     }

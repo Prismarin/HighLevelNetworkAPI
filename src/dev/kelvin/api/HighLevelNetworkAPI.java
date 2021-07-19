@@ -7,12 +7,15 @@ import dev.kelvin.api.network.events.IOnConnectionClosed;
 import dev.kelvin.api.network.events.IOnConnectionFailed;
 import dev.kelvin.api.network.events.IOnConnectionSucceeded;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 public class HighLevelNetworkAPI {
 
     protected Object netObject;
     protected Network net;
+
+    protected Method[] remoteMethods;
 
     protected ArrayList<IOnConnectionSucceeded> onConnectionSucceededList;
     protected ArrayList<IOnConnectionClosed> onConnectionClosedList;
@@ -24,9 +27,29 @@ public class HighLevelNetworkAPI {
      */
     public HighLevelNetworkAPI(Object object) {
         this.netObject = object;
+
+        getRemoteMethods();
+
         onConnectionSucceededList = new ArrayList<>();
         onConnectionClosedList = new ArrayList<>();
         onConnectionFailedList = new ArrayList<>();
+    }
+
+    /**
+     * getRemoteMethods assumes that netObject != null
+     */
+    private void getRemoteMethods() {
+        Method[] allMethods = netObject.getClass().getDeclaredMethods();
+        ArrayList<Method> remoteMethods = new ArrayList<>();
+        for (Method method : allMethods) {
+            if (method.isAnnotationPresent(Remote.class)) {
+                remoteMethods.add(method);
+            }
+        }
+        this.remoteMethods = new Method[remoteMethods.size()];
+        for (int i = 0; i < this.remoteMethods.length; i++) {
+            this.remoteMethods[i] = remoteMethods.get(i);
+        }
     }
 
     public void createServer() {
@@ -90,6 +113,23 @@ public class HighLevelNetworkAPI {
      */
     public void addOnConnectionClosed(IOnConnectionClosed onConnectionClosed) {
         onConnectionClosedList.add(onConnectionClosed);
+    }
+
+    public void call(String methodName, String... args) {
+        Method methodToRun = getMethodByName(methodName);
+    }
+
+    /**
+     *
+     * @param methodName is the name of the method which is searched
+     * @return the method-object || null if !remoteMethods.contains(method -> methodName)
+     */
+    private Method getMethodByName(String methodName) {
+        for (Method method : remoteMethods) {
+            if (method.getName().equals(methodName))
+                return method;
+        }
+        return null;
     }
 
 }
