@@ -12,7 +12,7 @@ public abstract class Network {
         this.netObject = object;
     }
 
-    public abstract void send(long peerId, String methodName, String...args);
+    public void send(long peerId, String methodName, String...args) {}
 
     public void receive() {
 

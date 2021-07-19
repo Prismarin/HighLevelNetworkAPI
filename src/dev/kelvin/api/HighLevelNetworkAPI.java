@@ -6,7 +6,10 @@ import dev.kelvin.api.network.Server;
 import dev.kelvin.api.network.events.IOnConnectionClosed;
 import dev.kelvin.api.network.events.IOnConnectionFailed;
 import dev.kelvin.api.network.events.IOnConnectionSucceeded;
+import dev.kelvin.api.network.exceptions.MissingArgumentException;
+import dev.kelvin.api.network.exceptions.TooManyArgumentsException;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
@@ -115,8 +118,62 @@ public class HighLevelNetworkAPI {
         onConnectionClosedList.add(onConnectionClosed);
     }
 
-    public void call(String methodName, String... args) {
+    public void call(String methodName, String... args) throws InvocationTargetException, IllegalAccessException {
         Method methodToRun = getMethodByName(methodName);
+        if (methodToRun != null) {
+            int argNumber = methodToRun.getAnnotation(Remote.class).value();
+            if (argNumber < args.length)
+                throw new TooManyArgumentsException(methodName, argNumber, args.length);
+            else if (argNumber > args.length)
+                throw new MissingArgumentException(methodName, args.length, argNumber);
+            else if (argNumber > 12)
+                throw new RuntimeException("Remote methods can only have a maximum of 12 arguments");
+            else {
+                switch (argNumber) {
+                    case 0:
+                        methodToRun.invoke(netObject);
+                        break;
+                    case 1:
+                        methodToRun.invoke(netObject, args[0]);
+                        break;
+                    case 2:
+                        methodToRun.invoke(netObject, args[0], args[1]);
+                        break;
+                    case 3:
+                        methodToRun.invoke(netObject, args[0], args[1], args[2]);
+                        break;
+                    case 4:
+                        methodToRun.invoke(netObject, args[0], args[1], args[2], args[3]);
+                        break;
+                    case 5:
+                        methodToRun.invoke(netObject, args[0], args[1], args[2], args[3], args[4]);
+                        break;
+                    case 6:
+                        methodToRun.invoke(netObject, args[0], args[1], args[2], args[3], args[4], args[5]);
+                        break;
+                    case 7:
+                        methodToRun.invoke(netObject, args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
+                        break;
+                    case 8:
+                        methodToRun.invoke(netObject, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
+                        break;
+                    case 9:
+                        methodToRun.invoke(netObject, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8]);
+                        break;
+                    case 10:
+                        methodToRun.invoke(netObject, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9]);
+                        break;
+                    case 11:
+                        methodToRun.invoke(netObject, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10]);
+                        break;
+                    case 12:
+                        methodToRun.invoke(netObject, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11]);
+                        break;
+                    default:
+                        System.err.println("HighLevelNetworkAPI unknown error!");
+                }
+            }
+        }
     }
 
     /**
