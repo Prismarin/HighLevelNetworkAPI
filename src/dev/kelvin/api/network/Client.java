@@ -32,12 +32,20 @@ public class Client extends Network {
 
     @Override
     public void send_udp(long uuid, String methodName, String... args) {
+        if (uuid == 1) {
 
+        } else {
+            System.err.println("Client is only allowed to send to 1");
+        }
     }
 
     @Override
     public void send_tcp(long uuid, String methodName, String... args) {
+        if (uuid == 1) {
 
+        } else {
+            System.err.println("Client is only allowed to send to 1");
+        }
     }
 
     @Override
