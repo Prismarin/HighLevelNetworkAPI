@@ -2,10 +2,27 @@ package dev.kelvin.api.network;
 
 import dev.kelvin.api.HighLevelNetworkAPI;
 
+import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.ServerSocket;
+
 public class Server extends Network {
 
-    public Server(Object object, HighLevelNetworkAPI hln) {
+    protected DatagramSocket udpSocket;
+    protected ServerSocket tcpSocket;
+
+    protected int port;
+
+    public Server(Object object, HighLevelNetworkAPI hln, int port) {
         super(object, hln);
+        this.port = port;
+
+        try {
+            udpSocket = new DatagramSocket(port);
+            tcpSocket = new ServerSocket(port);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

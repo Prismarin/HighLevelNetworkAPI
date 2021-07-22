@@ -1,7 +1,6 @@
 package dev.kelvin.api;
 
 import dev.kelvin.api.network.Client;
-import dev.kelvin.api.network.Network;
 import dev.kelvin.api.network.Server;
 import dev.kelvin.api.network.events.IOnConnectionClosed;
 import dev.kelvin.api.network.events.IOnConnectionFailed;
@@ -16,7 +15,8 @@ import java.util.ArrayList;
 public class HighLevelNetworkAPI {
 
     protected Object netObject;
-    protected Network net;
+    protected Server server;
+    protected Client client;
 
     protected Method[] remoteMethods;
 
@@ -55,14 +55,22 @@ public class HighLevelNetworkAPI {
         }
     }
 
-    public void createServer() {
-        if (net == null)
-            net = new Server(netObject, this);
+    public void createServer(int port) {
+        if (server == null && client == null)
+            new Server(netObject, this, port);
+        else if (server == null)
+            System.err.println("A client is already created on this HighLevelNetwork");
+        else
+            System.err.println("A server is already created on this HighLevelNetwork");
     }
 
     public void createClient(String address, int port) {
-        if (net == null)
-            net = new Client(netObject, this, address, port);
+        if (client == null && server == null)
+            client = new Client(netObject, this, address, port);
+        else if (server == null)
+            System.err.println("A client is already created on this HighLevelNetwork");
+        else
+            System.err.println("A server is already created on this HighLevelNetwork");
     }
 
     /**
@@ -71,9 +79,14 @@ public class HighLevelNetworkAPI {
      *
      * @param peerId case 0 send to all, case 1 send to server, case n send to specific peer
      * @param methodName name of called method on the other side
-     * @param strings parameters for called methods on other side
+     * @param args parameters for called methods on other side
      */
-    public void send_unreliable(long peerId, String methodName, String... strings) {}
+    public void send_unreliable(long peerId, String methodName, String... args) {
+        if (client != null)
+            client.send_udp(peerId, methodName, args);
+        else
+            server.send_udp(peerId, methodName, args);
+    }
 
     /**
      *
@@ -81,9 +94,9 @@ public class HighLevelNetworkAPI {
      *
      * @param peerId case 0 send to all, case 1 send to server, case n send to specific peer
      * @param methodName name of called method on the other side
-     * @param strings parameters for called methods on other side
+     * @param args parameters for called methods on other side
      */
-    public void send(long peerId, String methodName, String... strings) {}
+    public void send(long peerId, String methodName, String... args) {}
 
     /**
      *
@@ -103,8 +116,7 @@ public class HighLevelNetworkAPI {
      * @param onConnectionFailed method reference
      */
     public void addOnConnectionFailed(IOnConnectionFailed onConnectionFailed) {
-        if (net instanceof Client)
-            onConnectionFailedList.add(onConnectionFailed);
+        onConnectionFailedList.add(onConnectionFailed);
     }
 
     /**

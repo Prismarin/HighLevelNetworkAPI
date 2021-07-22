@@ -34,17 +34,8 @@ public class Client extends Network {
     @Override
     public void send_udp(long uuid, String methodName, String... args) {
         if (uuid == 1) {
-
-        } else {
-            System.err.println("Client is only allowed to send to 1");
-        }
-    }
-
-    @Override
-    public void send_tcp(long uuid, String methodName, String... args) {
-        if (uuid == 1) {
             // mit dictionary
-            String send = methodName + ";" + Arrays.toString(args);
+            String send = methodName + ";" + Arrays.toString(args) + "\\e";
             byte[] data = send.getBytes();
             DatagramPacket packet = new DatagramPacket(data, data.length, ip, port);
 
@@ -59,8 +50,35 @@ public class Client extends Network {
     }
 
     @Override
-    protected void listenUdp() {
+    public void send_tcp(long uuid, String methodName, String... args) {
+        if (uuid == 1) {
 
+        } else {
+            System.err.println("Client is only allowed to send to 1");
+        }
+    }
+
+    @Override
+    protected void listenUdp() {
+        while (running) {
+            byte[] data = new byte[8192];
+
+            DatagramPacket packet = new DatagramPacket(data, data.length);
+            try {
+                udpSocket.receive(packet);
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.err.println("Not working on with this msg!");
+                continue;
+            }
+
+            String msg = new String(data);
+            msg = msg.substring(0, msg.indexOf("\\e"));
+            System.out.println(msg);
+
+            //get method
+            //call method
+        }
     }
 
     @Override

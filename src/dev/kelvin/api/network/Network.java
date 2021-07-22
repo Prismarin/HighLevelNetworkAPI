@@ -7,7 +7,7 @@ public abstract class Network {
     protected Object netObject;
     protected HighLevelNetworkAPI hln;
 
-    private boolean running;
+    protected boolean running;
 
     protected Thread udpListener, tcpListener;
 
