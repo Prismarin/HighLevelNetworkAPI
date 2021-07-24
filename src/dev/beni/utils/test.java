@@ -13,21 +13,23 @@ public class test {
         socdic.add("size", "190");
         socdic.printout();
         socdic.setValueByKey("name", "Tom");
-        //socdic.printout();
-        //System.out.println(socdic.toString());
-        System.out.println("Lül");
+        socdic.printout();
+        System.out.println(socdic.toString());
 
-        socdic.fromString(socdic.toString());
-        System.out.println("lül");
-        //socdic2.printout();
+        String string = socdic.toString();
 
-        //socdic.remove("name");
-        //socdic.printout();
-        //System.out.println(socdic.toString());
+        SocketDict socdic2 = socdic.fromString(string);
+        System.out.print("socdic2: ");
+        socdic2.printout();
 
-        //System.out.println(socdic.canBeConvertedToInteger("size"));
-        //System.out.println(socdic.canBeConvertedToDouble("size"));
-        //System.out.println(socdic.convertToInteger("size"));
+        socdic.remove("name");
+        socdic.printout();
+        System.out.println(socdic.toString());
+
+        System.out.println(socdic.canBeConvertedToInteger("size"));
+        System.out.println(socdic.canBeConvertedToDouble("size"));
+        System.out.println(socdic.convertToInteger("size"));
+        System.out.println(socdic.convertToDouble("size"));
     }
 
 }

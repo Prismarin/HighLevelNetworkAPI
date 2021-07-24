@@ -110,24 +110,25 @@ public class SocketDict {
             }
         }
 
-
         //gets all the values and puts them into the values_from_string List
         int values_beginning = keys_end + 1;
         int end_of_last_val = values_beginning;
+        int pos = 0;
 
-        for (int i = values_beginning; i < string.length(); i++) {
+        for (int i = values_beginning; i < string.length() + 1; i++) {
             char character = string.charAt(i);
             if(character == '\\'){
                 if(string.charAt(i + 1) == 'd'){
-                    converted_from_String.setValueByPos(i, string.substring(end_of_last_val));
+                    converted_from_String.setValueByPos(pos, string.substring(end_of_last_val, i));
                     end_of_last_val = i + 2;
+                    pos++;
                 }
             } else if(character == '}'){
-                converted_from_String.setValueByPos(i, string.substring(end_of_last_val));
+                converted_from_String.setValueByPos(pos, string.substring(end_of_last_val, i));
+                break;
             }
         }
 
-        converted_from_String.printout();
         return converted_from_String;
     }
 
