@@ -4,11 +4,12 @@ import java.util.*;
 
 public class SocketDict {
 
-    private List<String> keys = new ArrayList<String>();
-    private List<String> values = new ArrayList<String>();
+    private final ArrayList<String> keys;
+    private final ArrayList<String> values;
 
     public SocketDict() {
-
+        keys = new ArrayList<>();
+        values = new ArrayList<>();
     }
 
     public void printout() {
@@ -18,22 +19,21 @@ public class SocketDict {
             System.out.print(", value:");
             System.out.print(values.get(i) + ") ");
         }
-        System.out.println("");
+        System.out.println();
     }
 
     public void setValue(String key, String new_value){
         for (int i = 0; i < keys.size(); i++) {
-            if(keys.get(i) == key){
+            if(keys.get(i).equals(key)){
                 values.set(i, new_value);
+                break;
             }
         }
     }
 
     public void add(String key, String value) {
         //adds new values to the Lists
-        if(keys.contains(key)){
-            //does nothing lol
-        } else {
+        if(!keys.contains(key)) {
             keys.add(key);
             values.add(value);
         }
@@ -42,9 +42,10 @@ public class SocketDict {
     public void remove(String keyname){
         //removes values from the Lists
         for (int i = 0; i < keys.size(); i++) {
-            if (keys.get(i) == keyname){
+            if (keys.get(i).equals(keyname)){
                 keys.remove(i);
                 values.remove(i);
+                break;
             }
         }
     }
@@ -76,7 +77,7 @@ public class SocketDict {
         return stringified;
     }
 
-    public List[] fromString(String string) {
+    public SocketDict fromString(String string) {
         //converts the created String (in toString()) back to the two Lists
 
         List[] listarray = new List[2];
@@ -130,7 +131,7 @@ public class SocketDict {
 
         listarray[0] = keys_from_string;
         listarray[1] = values_from_string;
-        return listarray;
+        return null;
     }
 
     public List ValuesFromString(String string){
@@ -202,24 +203,23 @@ public class SocketDict {
         return keys_from_string;
     }
 
-    public boolean canbeconvertedtoInteger(String key_for_value_to_be_checked) {
-        boolean can = false;
+    public boolean canBeConvertedToInteger(String key_for_value_to_be_checked) {
         if(keys.contains(key_for_value_to_be_checked)) {
             for (int i = 0; i < keys.size(); i++) {
                 if (keys.get(i) == key_for_value_to_be_checked) {
                     try {
                         Integer.parseInt(values.get(i));
-                        can = true;
+                        return true;
                     } catch (Exception NumberFormatException) {
-                        can = false;
+                        return false;
                     }
                 }
             }
         }
-        return can;
+        return false;
     }
 
-    public boolean canbeconvertedtoDouble(String key_for_value_to_be_checked) {
+    public boolean canBeConvertedToDouble(String key_for_value_to_be_checked) {
         boolean can = false;
         if(keys.contains(key_for_value_to_be_checked)) {
             for (int i = 0; i < keys.size(); i++) {
@@ -236,7 +236,7 @@ public class SocketDict {
         return can;
     }
 
-    public Integer converttoInteger(String key_for_value_to_be_converted){
+    public Integer convertToInteger(String key_for_value_to_be_converted){
         int integer = 0;
         for (int i = 0; i < keys.size(); i++) {
             if (keys.get(i) == key_for_value_to_be_converted) {
@@ -246,7 +246,7 @@ public class SocketDict {
         return integer;
     }
 
-    public Double converttoDouble(String key_for_value_to_be_converted){
+    public Double convertToDouble(String key_for_value_to_be_converted){
         Double integer = 0.0;
         for (int i = 0; i < keys.size(); i++) {
             if (keys.get(i) == key_for_value_to_be_converted) {
