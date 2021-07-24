@@ -82,9 +82,9 @@ public class SocketDict {
     }
 
     public SocketDict fromString(String string) {
-        //converts the created String (made in toString()) back to a SocketDict object
-
+        //converts the created String (made in toString()) back to a new SocketDict object
         SocketDict converted_from_String = new SocketDict();
+
         //finds where "keys-part" ends
         int keys_end = 0;
         for (int i = 0; i < string.length(); i++) {
@@ -107,6 +107,7 @@ public class SocketDict {
                 }
             } else if(character == '}'){
                 converted_from_String.add(string.substring(end_of_last_key, i), "");
+                break;
             }
         }
 
