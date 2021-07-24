@@ -8,41 +8,26 @@ public class test {
 
     public static void main(String[] args) {
         SocketDict socdic = new SocketDict();
-        SocketDict socdic2 = new SocketDict();
 
         socdic.add("name", "tom");
         socdic.add("size", "190");
-        //socdic.printout();
-        socdic.setValue("name", "Tom");
+        socdic.printout();
+        socdic.setValueByKey("name", "Tom");
         //socdic.printout();
         //System.out.println(socdic.toString());
-        List[] array = socdic2.fromString(socdic.toString());
+        System.out.println("Lül");
 
-        //System.out.println(array[0].get(0));
-        //System.out.println(array[1].get(0));
+        socdic.fromString(socdic.toString());
+        System.out.println("lül");
+        //socdic2.printout();
 
-        //System.out.println(array[0].get(1));
-        //System.out.println(array[1].get(1));
-
-        List keys_from_string = socdic2.KeysfromString(socdic.toString());
-        for (int i = 0; i < keys_from_string.size(); i++) {
-            System.out.print("key:");
-            System.out.println(keys_from_string.get(i));
-        }
-
-        List values_from_string = socdic2.ValuesFromString(socdic.toString());
-        for (int i = 0; i < values_from_string.size(); i++) {
-            System.out.print("value:");
-            System.out.println(values_from_string.get(i));
-        }
-
-        socdic.remove("name");
+        //socdic.remove("name");
         //socdic.printout();
         //System.out.println(socdic.toString());
 
-        System.out.println(socdic.canbeconvertedtoInteger("size"));
-        System.out.println(socdic.canbeconvertedtoDouble("size"));
-        System.out.println(socdic.converttoInteger("size"));
+        //System.out.println(socdic.canBeConvertedToInteger("size"));
+        //System.out.println(socdic.canBeConvertedToDouble("size"));
+        //System.out.println(socdic.convertToInteger("size"));
     }
 
 }

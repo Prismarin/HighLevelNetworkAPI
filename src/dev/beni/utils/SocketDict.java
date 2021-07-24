@@ -22,13 +22,17 @@ public class SocketDict {
         System.out.println();
     }
 
-    public void setValue(String key, String new_value){
+    public void setValueByKey(String key, String new_value){
         for (int i = 0; i < keys.size(); i++) {
             if(keys.get(i).equals(key)){
                 values.set(i, new_value);
                 break;
             }
         }
+    }
+
+    public void setValueByPos(int pos, String new_value){
+        values.set(pos, new_value);
     }
 
     public void add(String key, String value) {
@@ -78,9 +82,9 @@ public class SocketDict {
     }
 
     public SocketDict fromString(String string) {
-        //converts the created String (in toString()) back to the two Lists
+        //converts the created String (made in toString()) back to a SocketDict object
 
-        List[] listarray = new List[2];
+        SocketDict converted_from_String = new SocketDict();
         //finds where "keys-part" ends
         int keys_end = 0;
         for (int i = 0; i < string.length(); i++) {
@@ -92,26 +96,22 @@ public class SocketDict {
         }
 
         //gets all the keys and puts them into the keys_from_string List
-        List<String> keys_from_string = new ArrayList<String>();
         int end_of_last_key = 1;
 
         for (int i = 1; i < keys_end; i++) {
             char character = string.charAt(i);
             if(character == '\\'){
                 if(string.charAt(i + 1) == 'd'){
-                    keys_from_string.add(string.substring(end_of_last_key, i));
-                    //System.out.println(string.substring(end_of_last_key, i));
+                    converted_from_String.add(string.substring(end_of_last_key, i), "");
                     end_of_last_key = i + 2;
                 }
             } else if(character == '}'){
-                keys_from_string.add(string.substring(end_of_last_key, i));
-                //System.out.println(string.substring(end_of_last_key, i));
+                converted_from_String.add(string.substring(end_of_last_key, i), "");
             }
         }
 
 
         //gets all the values and puts them into the values_from_string List
-        List<String> values_from_string = new ArrayList<String>();
         int values_beginning = keys_end + 1;
         int end_of_last_val = values_beginning;
 
@@ -119,19 +119,16 @@ public class SocketDict {
             char character = string.charAt(i);
             if(character == '\\'){
                 if(string.charAt(i + 1) == 'd'){
-                    values_from_string.add(string.substring(end_of_last_val, i));
-                    //System.out.println(string.substring(end_of_last_val, i));
+                    converted_from_String.setValueByPos(i, string.substring(end_of_last_val));
                     end_of_last_val = i + 2;
                 }
             } else if(character == '}'){
-                values_from_string.add(string.substring(end_of_last_val, i));
-                //System.out.println(string.substring(end_of_last_val, i));
+                converted_from_String.setValueByPos(i, string.substring(end_of_last_val));
             }
         }
 
-        listarray[0] = keys_from_string;
-        listarray[1] = values_from_string;
-        return null;
+        converted_from_String.printout();
+        return converted_from_String;
     }
 
     public List ValuesFromString(String string){
@@ -206,7 +203,7 @@ public class SocketDict {
     public boolean canBeConvertedToInteger(String key_for_value_to_be_checked) {
         if(keys.contains(key_for_value_to_be_checked)) {
             for (int i = 0; i < keys.size(); i++) {
-                if (keys.get(i) == key_for_value_to_be_checked) {
+                if (keys.get(i).equals(key_for_value_to_be_checked)) {
                     try {
                         Integer.parseInt(values.get(i));
                         return true;
@@ -220,26 +217,25 @@ public class SocketDict {
     }
 
     public boolean canBeConvertedToDouble(String key_for_value_to_be_checked) {
-        boolean can = false;
         if(keys.contains(key_for_value_to_be_checked)) {
             for (int i = 0; i < keys.size(); i++) {
-                if (keys.get(i) == key_for_value_to_be_checked) {
+                if (keys.get(i).equals(key_for_value_to_be_checked)) {
                     try {
                         Double.parseDouble(values.get(i));
-                        can = true;
+                        return true;
                     } catch (Exception NumberFormatException) {
-                        can = false;
+                        return false;
                     }
                 }
             }
         }
-        return can;
+        return false;
     }
 
     public Integer convertToInteger(String key_for_value_to_be_converted){
         int integer = 0;
         for (int i = 0; i < keys.size(); i++) {
-            if (keys.get(i) == key_for_value_to_be_converted) {
+            if (keys.get(i).equals(key_for_value_to_be_converted)) {
                 integer = Integer.parseInt(values.get(i));
             }
         }
@@ -249,7 +245,7 @@ public class SocketDict {
     public Double convertToDouble(String key_for_value_to_be_converted){
         Double integer = 0.0;
         for (int i = 0; i < keys.size(); i++) {
-            if (keys.get(i) == key_for_value_to_be_converted) {
+            if (keys.get(i).equals(key_for_value_to_be_converted)) {
                 integer = Double.parseDouble(values.get(i));
             }
         }
