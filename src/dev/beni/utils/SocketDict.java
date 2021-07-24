@@ -202,4 +202,57 @@ public class SocketDict {
         return keys_from_string;
     }
 
+    public boolean canbeconvertedtoInteger(String key_for_value_to_be_checked) {
+        boolean can = false;
+        if(keys.contains(key_for_value_to_be_checked)) {
+            for (int i = 0; i < keys.size(); i++) {
+                if (keys.get(i) == key_for_value_to_be_checked) {
+                    try {
+                        Integer.parseInt(values.get(i));
+                        can = true;
+                    } catch (Exception NumberFormatException) {
+                        can = false;
+                    }
+                }
+            }
+        }
+        return can;
+    }
+
+    public boolean canbeconvertedtoDouble(String key_for_value_to_be_checked) {
+        boolean can = false;
+        if(keys.contains(key_for_value_to_be_checked)) {
+            for (int i = 0; i < keys.size(); i++) {
+                if (keys.get(i) == key_for_value_to_be_checked) {
+                    try {
+                        Double.parseDouble(values.get(i));
+                        can = true;
+                    } catch (Exception NumberFormatException) {
+                        can = false;
+                    }
+                }
+            }
+        }
+        return can;
+    }
+
+    public Integer converttoInteger(String key_for_value_to_be_converted){
+        int integer = 0;
+        for (int i = 0; i < keys.size(); i++) {
+            if (keys.get(i) == key_for_value_to_be_converted) {
+                integer = Integer.parseInt(values.get(i));
+            }
+        }
+        return integer;
+    }
+
+    public Double converttoDouble(String key_for_value_to_be_converted){
+        Double integer = 0.0;
+        for (int i = 0; i < keys.size(); i++) {
+            if (keys.get(i) == key_for_value_to_be_converted) {
+                integer = Double.parseDouble(values.get(i));
+            }
+        }
+        return integer;
+    }
 }

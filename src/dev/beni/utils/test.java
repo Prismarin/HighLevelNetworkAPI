@@ -11,7 +11,7 @@ public class test {
         SocketDict socdic2 = new SocketDict();
 
         socdic.add("name", "tom");
-        socdic.add("size", "1.90m");
+        socdic.add("size", "190");
         //socdic.printout();
         socdic.setValue("name", "Tom");
         //socdic.printout();
@@ -39,6 +39,10 @@ public class test {
         socdic.remove("name");
         //socdic.printout();
         //System.out.println(socdic.toString());
+
+        System.out.println(socdic.canbeconvertedtoInteger("size"));
+        System.out.println(socdic.canbeconvertedtoDouble("size"));
+        System.out.println(socdic.converttoInteger("size"));
     }
 
 }
