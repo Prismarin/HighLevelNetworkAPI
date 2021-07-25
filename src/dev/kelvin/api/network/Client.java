@@ -1,10 +1,10 @@
 package dev.kelvin.api.network;
 
+import dev.beni.utils.SocketDict;
 import dev.kelvin.api.HighLevelNetworkAPI;
 
 import java.io.IOException;
 import java.net.*;
-import java.util.Arrays;
 
 public class Client extends Network {
 
@@ -34,9 +34,13 @@ public class Client extends Network {
     @Override
     public void send_udp(long uuid, String methodName, String... args) {
         if (uuid == 1) {
-            // mit dictionary
-            String send = methodName + ";" + Arrays.toString(args) + "\\e";
-            byte[] data = send.getBytes();
+            SocketDict sendDict = new SocketDict();
+            sendDict.add("m", methodName);  //m == methodName
+            sendDict.add("s", String.valueOf(args.length));     //s == size
+            for (int i = 0; i < args.length; i++) {
+                sendDict.add("a" + i, args[i]);     //a == arg
+            }
+            byte[] data = (sendDict.toString() + endString).getBytes();
             DatagramPacket packet = new DatagramPacket(data, data.length, ip, port);
 
             try {
@@ -73,11 +77,10 @@ public class Client extends Network {
             }
 
             String msg = new String(data);
-            msg = msg.substring(0, msg.indexOf("\\e"));
-            System.out.println(msg);
+            msg = msg.substring(0, msg.indexOf(endString));
 
-            //get method
-            //call method
+            SocketDict receiveDict = SocketDict.fromString(msg);
+
         }
     }
 

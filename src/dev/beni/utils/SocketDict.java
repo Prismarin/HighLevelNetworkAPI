@@ -77,7 +77,7 @@ public class SocketDict {
         }
     }
 
-    public SocketDict fromString(String string) {
+    public static SocketDict fromString(String string) {
         //converts the created String (made in toString()) back to a new SocketDict object
         SocketDict converted_from_String = new SocketDict();
 

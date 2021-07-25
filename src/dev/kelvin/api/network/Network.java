@@ -4,6 +4,8 @@ import dev.kelvin.api.HighLevelNetworkAPI;
 
 public abstract class Network {
 
+    public static final String endString = "\\e";
+
     protected Object netObject;
     protected HighLevelNetworkAPI hln;
 
