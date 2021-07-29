@@ -6,9 +6,8 @@ import java.util.*;
 public class test2 {
 
     public static void main(String[] args) throws FileNotFoundException {
-        File file = new File("src/dev/beni/utils/test_file.sds");
-
         try {
+            File file = new File("src/dev/beni/utils/test_file.sds");
             Scanner filereader = new Scanner(file);
             while(filereader.hasNextLine()){
                 String data = filereader.nextLine();
@@ -22,7 +21,7 @@ public class test2 {
         try {
             FileWriter filewriter = new FileWriter("src/dev/beni/utils/test_file.sds", true);
             filewriter.write("{lol}");
-            filewriter.write("{lol}");
+            filewriter.write("\n");
             filewriter.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -38,6 +37,7 @@ public class test2 {
         }
 
         try {
+            File file = new File("src/dev/beni/utils/test_file.sds");
             Scanner filereader = new Scanner(file);
             while(filereader.hasNextLine()){
                 String data = filereader.nextLine();

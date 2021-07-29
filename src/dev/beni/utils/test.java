@@ -2,8 +2,6 @@ package dev.beni.utils;
 
 import dev.beni.utils.SocketDict;
 
-import java.util.List;
-
 public class test {
 
     public static void main(String[] args) {
