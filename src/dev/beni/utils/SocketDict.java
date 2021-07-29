@@ -54,6 +54,15 @@ public class SocketDict {
         }
     }
 
+    public String get(String key) {
+        for (int i = 0; i < keys.size(); i++) {
+            if (keys.get(i).equals(key)) {
+                return values.get(i);
+            }
+        }
+        return null;
+    }
+
     @Override
     public String toString() {
         //converts everything to a String in order to send it over sockets

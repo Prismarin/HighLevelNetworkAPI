@@ -4,6 +4,7 @@ import dev.beni.utils.SocketDict;
 import dev.kelvin.api.HighLevelNetworkAPI;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.*;
 
 public class Client extends Network {
@@ -40,7 +41,7 @@ public class Client extends Network {
             for (int i = 0; i < args.length; i++) {
                 sendDict.add("a" + i, args[i]);     //a == arg
             }
-            byte[] data = (sendDict.toString() + endString).getBytes();
+            byte[] data = (sendDict + endString).getBytes();
             DatagramPacket packet = new DatagramPacket(data, data.length, ip, port);
 
             try {
@@ -80,7 +81,16 @@ public class Client extends Network {
             msg = msg.substring(0, msg.indexOf(endString));
 
             SocketDict receiveDict = SocketDict.fromString(msg);
-
+            int argLength = Integer.parseInt(receiveDict.get("s"));
+            String[] args = new String[argLength];
+            for (int i = 0; i < argLength; i++) {
+                args[i] = receiveDict.get("a" + i);
+            }
+            try {
+                hln.call(receiveDict.get("m"), args);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
