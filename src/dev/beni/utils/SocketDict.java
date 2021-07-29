@@ -54,34 +54,39 @@ public class SocketDict {
         }
     }
 
+    public String get(String key) {
+        for (int i = 0; i < keys.size(); i++) {
+            if (keys.get(i).equals(key)) {
+                return values.get(i);
+            }
+        }
+        return null;
+    }
+
     @Override
     public String toString() {
         //converts everything to a String in order to send it over sockets
-        String stringified = "{";
-        for (int i = 0; i < keys.size(); i++) {
-            int len = keys.size() - 1;
-            if(i == len){
-                stringified += keys.get(i);
-            } else {
-                stringified += keys.get(i);
-                stringified += "\\d";
-            }
-        }
-        stringified += "}{";
-        for (int i = 0; i < keys.size(); i++) {
-            int len = keys.size() - 1;
-            if(i == len){
-                stringified += values.get(i);
-            } else {
-                stringified += values.get(i);
-                stringified += "\\d";
-            }
-        }
-        stringified += "}";
-        return stringified;
+        StringBuilder stringified = new StringBuilder("{");
+        toStringListBuilder(stringified, keys);
+        stringified.append("}{");
+        toStringListBuilder(stringified, values);
+        stringified.append("}");
+        return stringified.toString();
     }
 
-    public SocketDict fromString(String string) {
+    private void toStringListBuilder(StringBuilder stringified, ArrayList<String> values) {
+        for (int i = 0; i < keys.size(); i++) {
+            int len = keys.size() - 1;
+            if(i == len){
+                stringified.append(values.get(i));
+            } else {
+                stringified.append(values.get(i));
+                stringified.append("\\d");
+            }
+        }
+    }
+
+    public static SocketDict fromString(String string) {
         //converts the created String (made in toString()) back to a new SocketDict object
         SocketDict converted_from_String = new SocketDict();
 
@@ -156,7 +161,7 @@ public class SocketDict {
                     try {
                         Double.parseDouble(values.get(i));
                         return true;
-                    } catch (Exception NumberFormatException) {
+                    } catch (Exception ignored) {
                         return false;
                     }
                 }
@@ -176,7 +181,7 @@ public class SocketDict {
     }
 
     public Double convertToDouble(String key_for_value_to_be_converted){
-        Double integer = 0.0;
+        double integer = 0.0;
         for (int i = 0; i < keys.size(); i++) {
             if (keys.get(i).equals(key_for_value_to_be_converted)) {
                 integer = Double.parseDouble(values.get(i));
