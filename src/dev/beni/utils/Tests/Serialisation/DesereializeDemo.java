@@ -1,4 +1,4 @@
-package dev.beni.utils;
+package dev.beni.utils.Tests.Serialisation;
 
 import java.io.*;
 public class DesereializeDemo {

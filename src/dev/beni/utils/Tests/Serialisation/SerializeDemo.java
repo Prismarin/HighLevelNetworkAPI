@@ -1,4 +1,4 @@
-package dev.beni.utils;
+package dev.beni.utils.Tests.Serialisation;
 
 import java.io.*;
 public class SerializeDemo {
@@ -11,8 +11,7 @@ public class SerializeDemo {
         e.number = 101;
 
         try {
-            FileOutputStream fileOut =
-                    new FileOutputStream("src/dev/beni/utils/employee.ser");
+            FileOutputStream fileOut = new FileOutputStream("src/dev/beni/utils/employee.ser");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(e);
             out.close();
