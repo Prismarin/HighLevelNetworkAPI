@@ -1,4 +1,4 @@
-package dev.beni.utils;
+package dev.beni.utils.Tests.Serialisation;
 
 public class Employee implements java.io.Serializable {
     public String name;

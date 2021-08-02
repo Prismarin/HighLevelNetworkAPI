@@ -28,6 +28,11 @@ public class test {
         System.out.println(socdic.canBeConvertedToDouble("size"));
         System.out.println(socdic.convertToInteger("size"));
         System.out.println(socdic.convertToDouble("size"));
+
+        System.out.println();
+        System.out.println();
+        socdic.add("name", "John");
+        socdic.printoutstreams();
     }
 
 }
