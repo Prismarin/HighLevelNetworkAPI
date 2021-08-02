@@ -4,7 +4,6 @@ import dev.beni.utils.SocketDict;
 import dev.kelvin.api.HighLevelNetworkAPI;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.*;
 
 public class Client extends Network {

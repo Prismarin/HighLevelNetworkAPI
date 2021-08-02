@@ -26,4 +26,5 @@ public class DesereializeDemo {
         System.out.println("SSN: " + e.SSN);
         System.out.println("Number: " + e.number);
     }
+
 }

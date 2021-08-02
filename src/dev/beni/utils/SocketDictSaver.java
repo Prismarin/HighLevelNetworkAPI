@@ -5,9 +5,7 @@ import java.util.Scanner;
 
 public class SocketDictSaver {
 
-    public SocketDictSaver() {}
-
-    public void writeNewSocketDictToFile(SocketDict socdict){
+    public static void writeNewSocketDictToFile(SocketDict socdict){
         try {
             FileWriter filewriter = new FileWriter("src/dev/beni/utils/test_file.sds", true);
             filewriter.write("{lol}");
@@ -18,7 +16,7 @@ public class SocketDictSaver {
         }
     }
 
-    public void readSocketDictFromFile() {
+    public static void readSocketDictFromFile() {
         File file = new File("src/dev/beni/utils/test_file.sds");
         try {
             Scanner filereader = new Scanner(file);
