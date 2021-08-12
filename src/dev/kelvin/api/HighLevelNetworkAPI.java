@@ -75,33 +75,41 @@ public class HighLevelNetworkAPI {
 
     /**
      *
-     * udp method
+     * <h5>
+     *     udp method
+     *     remote call udp
+     *     send unreliable
+     * </h5>
      *
-     * @param peerId case 0 send to all, case 1 send to server, case n send to specific peer
+     * @param userId case 0 send to all, case 1 send to server, case n send to specific peer
      * @param methodName name of called method on the other side
      * @param args parameters for called methods on other side
      */
-    public void send_unreliable(long peerId, String methodName, String... args) {
+    public void rcu(long userId, String methodName, String... args) {
         if (client != null)
-            client.send_udp(peerId, methodName, args);
+            client.send_udp(userId, methodName, args);
         else
-            server.send_udp(peerId, methodName, args);
+            server.send_udp(userId, methodName, args);
     }
 
     /**
      *
-     * tcp method
+     * <h5>
+     *     tcp method
+     *     remote call tcp
+     *     send reliable
+     * </h5>
      *
-     * @param peerId case 0 send to all, case 1 send to server, case n send to specific peer
+     * @param userId case 0 send to all, case 1 send to server, case n send to specific peer
      * @param methodName name of called method on the other side
      * @param args parameters for called methods on other side
      */
-    public void send(long peerId, String methodName, String... args) {}
+    public void rct(long userId, String methodName, String... args) {}
 
     /**
      *
      * used for clients when connected to the server - argument for onConnectionSucceeded = 0
-     * used for server when a client just connected - argument for onConnectionSucceeded = peerId or given id from a database
+     * used for server when a client just connected - argument for onConnectionSucceeded = userId or given id from a database
      *
      * @param onConnectionSucceeded method reference
      */
@@ -149,47 +157,20 @@ public class HighLevelNetworkAPI {
                 throw new RuntimeException("Remote methods can only have a maximum of 12 arguments");
             else {
                 switch (argNumber) {
-                    case 0:
-                        methodToRun.invoke(netObject);
-                        break;
-                    case 1:
-                        methodToRun.invoke(netObject, args[0]);
-                        break;
-                    case 2:
-                        methodToRun.invoke(netObject, args[0], args[1]);
-                        break;
-                    case 3:
-                        methodToRun.invoke(netObject, args[0], args[1], args[2]);
-                        break;
-                    case 4:
-                        methodToRun.invoke(netObject, args[0], args[1], args[2], args[3]);
-                        break;
-                    case 5:
-                        methodToRun.invoke(netObject, args[0], args[1], args[2], args[3], args[4]);
-                        break;
-                    case 6:
-                        methodToRun.invoke(netObject, args[0], args[1], args[2], args[3], args[4], args[5]);
-                        break;
-                    case 7:
-                        methodToRun.invoke(netObject, args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
-                        break;
-                    case 8:
-                        methodToRun.invoke(netObject, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
-                        break;
-                    case 9:
-                        methodToRun.invoke(netObject, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8]);
-                        break;
-                    case 10:
-                        methodToRun.invoke(netObject, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9]);
-                        break;
-                    case 11:
-                        methodToRun.invoke(netObject, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10]);
-                        break;
-                    case 12:
-                        methodToRun.invoke(netObject, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11]);
-                        break;
-                    default:
-                        System.err.println("HighLevelNetworkAPI unknown error!");
+                    case 0 -> methodToRun.invoke(netObject);
+                    case 1 -> methodToRun.invoke(netObject, args[0]);
+                    case 2 -> methodToRun.invoke(netObject, args[0], args[1]);
+                    case 3 -> methodToRun.invoke(netObject, args[0], args[1], args[2]);
+                    case 4 -> methodToRun.invoke(netObject, args[0], args[1], args[2], args[3]);
+                    case 5 -> methodToRun.invoke(netObject, args[0], args[1], args[2], args[3], args[4]);
+                    case 6 -> methodToRun.invoke(netObject, args[0], args[1], args[2], args[3], args[4], args[5]);
+                    case 7 -> methodToRun.invoke(netObject, args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
+                    case 8 -> methodToRun.invoke(netObject, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
+                    case 9 -> methodToRun.invoke(netObject, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8]);
+                    case 10 -> methodToRun.invoke(netObject, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9]);
+                    case 11 -> methodToRun.invoke(netObject, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10]);
+                    case 12 -> methodToRun.invoke(netObject, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11]);
+                    default -> System.err.println("HighLevelNetworkAPI unknown error!");
                 }
             }
         }
