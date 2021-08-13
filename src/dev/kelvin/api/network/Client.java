@@ -32,7 +32,7 @@ public class Client extends Network {
     }
 
     @Override
-    public void send_udp(long uuid, String methodName, String... args) {
+    public void rcu_id(long uuid, String methodName, String... args) {
         if (uuid == 1) {
             SocketDict sendDict = new SocketDict();
             sendDict.add("m", methodName);  //m == methodName
@@ -53,13 +53,21 @@ public class Client extends Network {
         }
     }
 
+    public void rcu(String methodName, String...args) {
+        rcu_id(1, methodName, args);
+    }
+
     @Override
-    public void send_tcp(long uuid, String methodName, String... args) {
+    public void rct_id(long uuid, String methodName, String... args) {
         if (uuid == 1) {
 
         } else {
             System.err.println("Client is only allowed to send to 1");
         }
+    }
+
+    public void rct(String methodName, String...args) {
+        rct_id(1, methodName, args);
     }
 
     @Override

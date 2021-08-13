@@ -85,11 +85,11 @@ public class HighLevelNetworkAPI {
      * @param methodName name of called method on the other side
      * @param args parameters for called methods on other side
      */
-    public void rcu(long userId, String methodName, String... args) {
+    public void rcu_id(long userId, String methodName, String... args) {
         if (client != null)
-            client.send_udp(userId, methodName, args);
+            client.rcu_id(userId, methodName, args);
         else
-            server.send_udp(userId, methodName, args);
+            server.rcu_id(userId, methodName, args);
     }
 
     /**
@@ -104,7 +104,7 @@ public class HighLevelNetworkAPI {
      * @param methodName name of called method on the other side
      * @param args parameters for called methods on other side
      */
-    public void rct(long userId, String methodName, String... args) {}
+    public void rct_id(long userId, String methodName, String... args) {}
 
     /**
      *

@@ -34,7 +34,7 @@ public class Server extends Network {
     }
 
     @Override
-    public void send_udp(long uuid, String methodName, String... args) {
+    public void rcu_id(long uuid, String methodName, String... args) {
         if (uuid == 0) {
             //send all
         } else {
@@ -42,9 +42,17 @@ public class Server extends Network {
         }
     }
 
-    @Override
-    public void send_tcp(long uuid, String methodName, String... args) {
+    public void rcu(String methodName, String... args) {
+        rcu_id(0, methodName, args);
+    }
 
+    @Override
+    public void rct_id(long uuid, String methodName, String... args) {
+
+    }
+
+    public void rct(String methodName, String... args) {
+        rct_id(0, methodName, args);
     }
 
     @Override
@@ -84,6 +92,14 @@ public class Server extends Network {
 
     }
 
+    /**
+     *
+     * <h4>
+     *     Server does not use listenTCP <br>
+     *     Server uses a <strong>threadPool</strong> to listen for tcp messages
+     * </h4>
+     *
+     */
     @Override
     protected void listenTcp() {
 

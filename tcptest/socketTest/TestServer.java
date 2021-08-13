@@ -13,7 +13,7 @@ public class TestServer extends Thread {
 
     public TestServer() throws IOException {
         server = new ServerSocket(1235);
-        server.setSoTimeout(2147483000);
+        server.setSoTimeout(0);
     }
 
     @Override

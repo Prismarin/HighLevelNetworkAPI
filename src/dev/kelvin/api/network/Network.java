@@ -26,21 +26,15 @@ public abstract class Network {
         }
     }
 
-    public void send_udp(String methodName, String...args) {
-        if (!(this instanceof Server))
-            send_udp(1, methodName, args);
-    }
+    public abstract void rcu_id(long uuid, String methodName, String...args);
 
-    public void send_tcp(String methodName, String...args) {
-        if (!(this instanceof Server))
-            send_tcp(1, methodName, args);
-    }
-
-    public abstract void send_udp(long uuid, String methodName, String...args);
-
-    public abstract void send_tcp(long uuid, String methodName, String...args);
+    public abstract void rct_id(long uuid, String methodName, String...args);
 
     protected abstract void listenUdp();
+
+    protected void defaultListenUdp() {
+
+    }
 
     protected abstract void listenTcp();
 

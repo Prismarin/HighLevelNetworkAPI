@@ -21,6 +21,7 @@ public class TestClient {
 
             DataInputStream in = new DataInputStream(client.getInputStream());
             System.out.println("Server says: " + in.readUTF());
+            System.out.println(in.readUTF());
             client.close();
         } catch (IOException e) {
             e.printStackTrace();
