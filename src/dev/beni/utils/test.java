@@ -32,7 +32,7 @@ public class test {
         System.out.println();
         System.out.println();
         socdic.add("name", "John");
-        socdic.printoutstreams();
+        //socdic.printoutstreams();
     }
 
 }

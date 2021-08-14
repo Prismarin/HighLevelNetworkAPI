@@ -4,28 +4,36 @@ import dev.kelvin.api.HighLevelNetworkAPI;
 import dev.kelvin.api.Remote;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Scanner;
 
 public class TestClient {
 
-    public static void main(String[] args) throws InvocationTargetException, IllegalAccessException {
+    public static void main(String[] args) {
         TestClient t = new TestClient();
-        t.test();
     }
 
     private final HighLevelNetworkAPI hln;
+    private final Scanner scan;
 
     public TestClient() {
         hln = new HighLevelNetworkAPI(this);
-        hln.createClient("", 1235);
+        hln.createClient("localhost", 7777);
+        scan = new Scanner(System.in);
+        fetchInput();
     }
 
-    public void test() throws InvocationTargetException, IllegalAccessException {
-        hln.call("dosth", "Hello World!");
+    public void fetchInput() {
+        String input = "";
+        do {
+            input = scan.nextLine();
+            hln.rct_id(1, "receiveMsg", input);
+        } while (!input.equals("exit"));
+        hln.disconnect();
     }
 
     @Remote(1)
-    public void dosth(String printThis) {
-        System.out.println(printThis);
+    public void receiveMsg(String s) {
+        System.out.println(s);
     }
 
 }

@@ -125,6 +125,7 @@ public class Server extends NetworkParticipant {
                 clients.put(userId, newClient);
                 newClient.start();
                 //trigger event client connected with userId
+                hln.triggerConnectionSucceeded(userId);
             }
         }
     }
@@ -133,7 +134,7 @@ public class Server extends NetworkParticipant {
         int ret;
         do {
             ret = rand.nextInt();
-        } while (clients.containsKey(ret) || ret == 0);
+        } while (clients.containsKey(ret) || ret <= 1);
         return ret;
     }
 

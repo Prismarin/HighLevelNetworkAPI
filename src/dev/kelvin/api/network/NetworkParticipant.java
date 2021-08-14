@@ -23,6 +23,8 @@ public abstract class NetworkParticipant {
             running = true;
             udpListener = new Thread(this::listenUdp);
             tcpListener = new Thread(this::listenTcp);
+            udpListener.start();
+            tcpListener.start();
         }
     }
 
@@ -32,10 +34,10 @@ public abstract class NetworkParticipant {
 
     protected abstract void listenUdp();
 
-    protected void defaultListenUdp() {
-
-    }
-
     protected abstract void listenTcp();
+
+    public void stop() {
+        running = false;
+    }
 
 }

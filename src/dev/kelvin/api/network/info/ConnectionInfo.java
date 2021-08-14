@@ -6,6 +6,7 @@ import dev.kelvin.api.network.utils.Utils;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -37,19 +38,28 @@ public class ConnectionInfo extends Thread {
             try {
                 String input = in.readUTF();
                 SocketDict dict = SocketDict.fromString(input);
-                if (dict.get("m").equals("\\dis")) {
+                if (dict.get("m").equals("//dis")) {
                     tcpSocket.close();
                     break;
                 }
                 Utils.workWithReceivedData(hln, dict);
+            } catch (EOFException ignored) {
+                System.err.println("Client just disconnected without telling the server!");
+                break;
             } catch (IOException e) {
                 e.printStackTrace();
+                try {
+                    tcpSocket.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                break;
             }
         }
     }
 
     public boolean send(String send) throws IOException {
-        if (!tcpSocket.isConnected())
+        if (!tcpSocket.isConnected() || tcpSocket.isClosed())
             return false;
         out.writeUTF(send);
         return true;

@@ -39,6 +39,7 @@ public class HighLevelNetworkAPI {
     }
 
     /**
+     *
      * getRemoteMethods assumes that netObject != null
      */
     private void getRemoteMethods() {
@@ -56,8 +57,10 @@ public class HighLevelNetworkAPI {
     }
 
     public void createServer(int port) {
-        if (server == null && client == null)
-            new Server(netObject, this, port);
+        if (server == null && client == null) {
+            server = new Server(netObject, this, port);
+            server.start();
+        }
         else if (server == null)
             System.err.println("A client is already created on this HighLevelNetwork");
         else
@@ -65,8 +68,10 @@ public class HighLevelNetworkAPI {
     }
 
     public void createClient(String address, int port) {
-        if (client == null && server == null)
+        if (client == null && server == null) {
             client = new Client(netObject, this, address, port);
+            client.start();
+        }
         else if (server == null)
             System.err.println("A client is already created on this HighLevelNetwork");
         else
@@ -104,7 +109,12 @@ public class HighLevelNetworkAPI {
      * @param methodName name of called method on the other side
      * @param args parameters for called methods on other side
      */
-    public void rct_id(int userId, String methodName, String... args) {}
+    public void rct_id(int userId, String methodName, String... args) {
+        if (client != null)
+            client.rct_id(userId, methodName, args);
+        else
+            server.rct_id(userId, methodName, args);
+    }
 
     /**
      *
@@ -119,6 +129,17 @@ public class HighLevelNetworkAPI {
 
     /**
      *
+     * called when a new client has connected to the server
+     *
+     * @param userId the userId from the new user
+     */
+    public void triggerConnectionSucceeded(int userId) {
+        for (IOnConnectionSucceeded e : onConnectionSucceededList)
+            e.onConnectionSucceeded(userId);
+    }
+
+    /**
+     *
      * only used for clients, when failed to connect to given host and port
      *
      * @param onConnectionFailed method reference
@@ -129,8 +150,17 @@ public class HighLevelNetworkAPI {
 
     /**
      *
+     * called when the client tried to connect to a host which refused the client
+     */
+    public void triggerConnectionFailed() {
+        for (IOnConnectionFailed e : onConnectionFailedList)
+            e.onConnectionFailed();
+    }
+
+    /**
+     *
      * used for clients when the server has closed the connection or crashed
-     * used for server when a client has disconnected and does not respond to pings anymore
+     * used for server when a client has disconnected
      *
      * @param onConnectionClosed method reference
      */
@@ -138,12 +168,17 @@ public class HighLevelNetworkAPI {
         onConnectionClosedList.add(onConnectionClosed);
     }
 
+    public void triggerConnectionClosed(int userId) {
+        for (IOnConnectionClosed e : onConnectionClosedList)
+            e.onConnectionClosed(userId);
+    }
+
     /**
      *
      * @param methodName the name of the method that will be called
      * @param args the arguments for the method
-     * @throws InvocationTargetException when the method cant be invoked
-     * @throws IllegalAccessException when the method that is called cant be accessed because it is not public
+     * @throws InvocationTargetException when the method can't be invoked
+     * @throws IllegalAccessException when the method that is called can't be accessed because it is not public
      */
     public void call(String methodName, String... args) throws InvocationTargetException, IllegalAccessException {
         Method methodToRun = getMethodByName(methodName);
@@ -187,6 +222,15 @@ public class HighLevelNetworkAPI {
                 return method;
         }
         return null;
+    }
+
+    /**
+     *
+     * client method to disconnect from the server
+     */
+    public void disconnect() {
+        rct_id(1, "//dis");
+        client.stop();
     }
 
 }

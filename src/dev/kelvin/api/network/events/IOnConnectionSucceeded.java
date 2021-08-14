@@ -2,6 +2,6 @@ package dev.kelvin.api.network.events;
 
 public interface IOnConnectionSucceeded {
 
-    void onConnectionSucceeded(long uuid);
+    void onConnectionSucceeded(int uuid);
 
 }
