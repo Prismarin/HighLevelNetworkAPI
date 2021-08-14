@@ -23,11 +23,6 @@ public class SocketDict {
 
     }
 
-    public void printoutstreams(){
-        keys.forEach(System.out::println);
-        values.forEach(System.out::println);
-    }
-
     public void setValueByKey(String key, String new_value){
         for (int i = 0; i < keys.size(); i++) {
             if(keys.get(i).equals(key)){
