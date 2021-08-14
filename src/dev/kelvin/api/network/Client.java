@@ -2,11 +2,12 @@ package dev.kelvin.api.network;
 
 import dev.beni.utils.SocketDict;
 import dev.kelvin.api.HighLevelNetworkAPI;
+import dev.kelvin.api.network.utils.Utils;
 
 import java.io.IOException;
 import java.net.*;
 
-public class Client extends Network {
+public class Client extends NetworkParticipant {
 
     protected DatagramSocket udpSocket;
     protected Socket tcpSocket;
@@ -32,14 +33,9 @@ public class Client extends Network {
     }
 
     @Override
-    public void rcu_id(long uuid, String methodName, String... args) {
+    public void rcu_id(int uuid, String methodName, String... args) {
         if (uuid == 1) {
-            SocketDict sendDict = new SocketDict();
-            sendDict.add("m", methodName);  //m == methodName
-            sendDict.add("s", String.valueOf(args.length));     //s == size
-            for (int i = 0; i < args.length; i++) {
-                sendDict.add("a" + i, args[i]);     //a == arg
-            }
+            SocketDict sendDict = Utils.buildFromMethodNameAndArgs(methodName, args);
             byte[] data = (sendDict + endString).getBytes();
             DatagramPacket packet = new DatagramPacket(data, data.length, ip, port);
 
@@ -58,7 +54,7 @@ public class Client extends Network {
     }
 
     @Override
-    public void rct_id(long uuid, String methodName, String... args) {
+    public void rct_id(int uuid, String methodName, String... args) {
         if (uuid == 1) {
 
         } else {
@@ -73,31 +69,7 @@ public class Client extends Network {
     @Override
     protected void listenUdp() {
         while (running) {
-            byte[] data = new byte[8192];
-
-            DatagramPacket packet = new DatagramPacket(data, data.length);
-            try {
-                udpSocket.receive(packet);
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.err.println("Not working on with this msg!");
-                continue;
-            }
-
-            String msg = new String(data);
-            msg = msg.substring(0, msg.indexOf(endString));
-
-            SocketDict receiveDict = SocketDict.fromString(msg);
-            int argLength = Integer.parseInt(receiveDict.get("s"));
-            String[] args = new String[argLength];
-            for (int i = 0; i < argLength; i++) {
-                args[i] = receiveDict.get("a" + i);
-            }
-            try {
-                hln.call(receiveDict.get("m"), args);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            Utils.defaultListenUDP(udpSocket, hln);
         }
     }
 

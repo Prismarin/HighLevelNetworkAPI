@@ -3,27 +3,31 @@ package dev.kelvin.api.network;
 import dev.beni.utils.SocketDict;
 import dev.kelvin.api.HighLevelNetworkAPI;
 import dev.kelvin.api.network.info.ConnectionInfo;
+import dev.kelvin.api.network.utils.Utils;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
-import java.util.ArrayList;
+import java.util.*;
 
-public class Server extends Network {
+public class Server extends NetworkParticipant {
 
     protected DatagramSocket udpSocket;
     protected ServerSocket tcpSocket;
 
-    protected ArrayList<ConnectionInfo> connectionInfos;
+    protected HashMap<Integer, ConnectionInfo> clients;
 
     protected int port;
+
+    protected Random rand;
 
     public Server(Object object, HighLevelNetworkAPI hln, int port) {
         super(object, hln);
         this.port = port;
 
-        connectionInfos = new ArrayList<>();
+        clients = new HashMap<>();
+        rand = new Random();
 
         try {
             udpSocket = new DatagramSocket(port);
@@ -34,11 +38,27 @@ public class Server extends Network {
     }
 
     @Override
-    public void rcu_id(long uuid, String methodName, String... args) {
+    public void rcu_id(int uuid, String methodName, String... args) {
         if (uuid == 0) {
             //send all
+            for (Map.Entry<Integer, ConnectionInfo> info : clients.entrySet()) {
+                rcu_id(info.getKey(), methodName, args);
+            }
         } else {
             //send one
+            if (clients.containsKey(uuid)) {
+                SocketDict sendDict = Utils.buildFromMethodNameAndArgs(methodName, args);
+                ConnectionInfo info = clients.get(uuid);
+                try {
+                    byte[] data = (sendDict + endString).getBytes();
+                    DatagramPacket packet = new DatagramPacket(data, data.length, info.address, info.port);
+                    udpSocket.send(packet);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                throw new IllegalArgumentException(uuid + " does not exist!");
+            }
         }
     }
 
@@ -47,8 +67,26 @@ public class Server extends Network {
     }
 
     @Override
-    public void rct_id(long uuid, String methodName, String... args) {
-
+    public void rct_id(int uuid, String methodName, String... args) {
+        if (uuid == 0) {
+            for (Map.Entry<Integer, ConnectionInfo> info : clients.entrySet()) {
+                rct_id(info.getKey(), methodName, args);
+            }
+        } else {
+            if (clients.containsKey(uuid)) {
+                SocketDict sendDict = Utils.buildFromMethodNameAndArgs(methodName, args);
+                ConnectionInfo info = clients.get(uuid);
+                try {
+                    boolean connected = info.send(sendDict.toString());
+                    if (!connected)
+                        clients.remove(uuid);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                throw new IllegalArgumentException(uuid + " does not exist!");
+            }
+        }
     }
 
     public void rct(String methodName, String... args) {
@@ -58,51 +96,45 @@ public class Server extends Network {
     @Override
     protected void listenUdp() {
         while (running) {
-            byte[] data = new byte[8192];
-
-            DatagramPacket packet = new DatagramPacket(data, data.length);
-            try {
-                udpSocket.receive(packet);
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.err.println("Not working on with this msg!");
-                continue;
-            }
-
-            String msg = new String(data);
-            msg = msg.substring(0, msg.indexOf(endString));
-
-            SocketDict receiveDict = SocketDict.fromString(msg);
-            int argLength = Integer.parseInt(receiveDict.get("s"));
-            String[] args = new String[argLength];
-            for (int i = 0; i < argLength; i++) {
-                args[i] = receiveDict.get("a" + i);
-            }
-            try {
-                if (receiveDict.get("m").equals("connect"))
-                    addConnection();
-                hln.call(receiveDict.get("m"), args);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            Utils.defaultListenUDP(udpSocket, hln);
         }
-    }
-
-    public void addConnection() {
-
     }
 
     /**
      *
      * <h4>
-     *     Server does not use listenTCP <br>
+     *     Server uses listenTCP for accepting new clients <br>
      *     Server uses a <strong>threadPool</strong> to listen for tcp messages
      * </h4>
      *
      */
     @Override
     protected void listenTcp() {
+        while (running) {
+            ConnectionInfo newClient = null;
+            boolean use = true;
+            try {
+                newClient = new ConnectionInfo(hln, tcpSocket.accept());
+            } catch (IOException e) {
+                e.printStackTrace();
+                use = false;
+            }
 
+            if (use) {
+                int userId = generateUniqueUserId();
+                clients.put(userId, newClient);
+                newClient.start();
+                //trigger event client connected with userId
+            }
+        }
+    }
+
+    private int generateUniqueUserId() {
+        int ret;
+        do {
+            ret = rand.nextInt();
+        } while (clients.containsKey(ret) || ret == 0);
+        return ret;
     }
 
 }

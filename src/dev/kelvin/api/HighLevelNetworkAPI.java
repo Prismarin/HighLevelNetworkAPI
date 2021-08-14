@@ -85,7 +85,7 @@ public class HighLevelNetworkAPI {
      * @param methodName name of called method on the other side
      * @param args parameters for called methods on other side
      */
-    public void rcu_id(long userId, String methodName, String... args) {
+    public void rcu_id(int userId, String methodName, String... args) {
         if (client != null)
             client.rcu_id(userId, methodName, args);
         else
@@ -104,7 +104,7 @@ public class HighLevelNetworkAPI {
      * @param methodName name of called method on the other side
      * @param args parameters for called methods on other side
      */
-    public void rct_id(long userId, String methodName, String... args) {}
+    public void rct_id(int userId, String methodName, String... args) {}
 
     /**
      *

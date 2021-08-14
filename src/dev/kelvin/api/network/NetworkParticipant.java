@@ -2,7 +2,7 @@ package dev.kelvin.api.network;
 
 import dev.kelvin.api.HighLevelNetworkAPI;
 
-public abstract class Network {
+public abstract class NetworkParticipant {
 
     public static final String endString = "\\e";
 
@@ -13,7 +13,7 @@ public abstract class Network {
 
     protected Thread udpListener, tcpListener;
 
-    public Network(Object object, HighLevelNetworkAPI hln) {
+    public NetworkParticipant(Object object, HighLevelNetworkAPI hln) {
         this.netObject = object;
         this.hln = hln;
     }
@@ -26,9 +26,9 @@ public abstract class Network {
         }
     }
 
-    public abstract void rcu_id(long uuid, String methodName, String...args);
+    public abstract void rcu_id(int uuid, String methodName, String...args);
 
-    public abstract void rct_id(long uuid, String methodName, String...args);
+    public abstract void rct_id(int uuid, String methodName, String...args);
 
     protected abstract void listenUdp();
 
