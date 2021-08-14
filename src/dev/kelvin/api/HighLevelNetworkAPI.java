@@ -227,6 +227,8 @@ public class HighLevelNetworkAPI {
     /**
      *
      * client method to disconnect from the server
+     *
+     * @throws NullPointerException if the method is called when {@link HighLevelNetworkAPI} is used as server
      */
     public void disconnect() {
         rct_id(1, "//dis");

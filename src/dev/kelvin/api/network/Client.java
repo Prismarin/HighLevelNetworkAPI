@@ -36,7 +36,7 @@ public class Client extends NetworkParticipant {
 
             in = new DataInputStream(tcpSocket.getInputStream());
             out = new DataOutputStream(tcpSocket.getOutputStream());
-        } catch (UnknownHostException e) {
+        } catch (UnknownHostException | ConnectException e) {
             hln.triggerConnectionFailed();
         } catch (IOException e) {
             e.printStackTrace();
@@ -97,6 +97,8 @@ public class Client extends NetworkParticipant {
 
     @Override
     protected void listenUdp() {
+        if (in == null)
+            return;
         while (running) {
             Utils.defaultListenUDP(udpSocket, hln);
         }
@@ -104,6 +106,8 @@ public class Client extends NetworkParticipant {
 
     @Override
     protected void listenTcp() {
+        if (in == null)
+            return;
         while (running) {
             try {
                 String input = in.readUTF();

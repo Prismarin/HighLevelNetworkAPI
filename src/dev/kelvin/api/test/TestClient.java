@@ -3,7 +3,6 @@ package dev.kelvin.api.test;
 import dev.kelvin.api.HighLevelNetworkAPI;
 import dev.kelvin.api.Remote;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Scanner;
 
 public class TestClient {
@@ -23,7 +22,7 @@ public class TestClient {
     }
 
     public void fetchInput() {
-        String input = "";
+        String input;
         do {
             input = scan.nextLine();
             hln.rct_id(1, "receiveMsg", input);
