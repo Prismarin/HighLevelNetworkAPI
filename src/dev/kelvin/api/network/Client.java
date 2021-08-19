@@ -66,6 +66,7 @@ public class Client extends NetworkParticipant {
      *     sends to the server
      * </h4>
      */
+    @Override
     public void rcu(String methodName, String...args) {
         rcu_id(1, methodName, args);
     }
@@ -91,6 +92,7 @@ public class Client extends NetworkParticipant {
      *     sends to the server
      * </h4>
      */
+    @Override
     public void rct(String methodName, String...args) {
         rct_id(1, methodName, args);
     }
@@ -115,8 +117,7 @@ public class Client extends NetworkParticipant {
                 Utils.workWithReceivedData(hln, receiveDict);
             } catch (EOFException ignored) {
                 break;
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }

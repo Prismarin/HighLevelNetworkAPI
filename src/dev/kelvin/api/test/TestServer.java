@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class TestServer {
 
     public static void main(String[] args) {
-        TestServer t = new TestServer();
+        new TestServer();
     }
 
     private final HighLevelNetworkAPI hln;
@@ -22,10 +22,10 @@ public class TestServer {
     }
 
     public void fetchInput() {
-        String input = "";
+        String input;
         do {
             input = scan.nextLine();
-            hln.rct_id(0, "receiveMsg", input);
+            hln.rct("receiveMsg", input);
         } while (!input.equals("exit"));
     }
 

@@ -28,7 +28,11 @@ public abstract class NetworkParticipant {
         }
     }
 
+    public abstract void rcu(String methodName, String...args);
+
     public abstract void rcu_id(int uuid, String methodName, String...args);
+
+    public abstract void rct(String methodName, String...args);
 
     public abstract void rct_id(int uuid, String methodName, String...args);
 

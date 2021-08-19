@@ -1,6 +1,7 @@
 package dev.kelvin.api;
 
 import dev.kelvin.api.network.Client;
+import dev.kelvin.api.network.NetworkParticipant;
 import dev.kelvin.api.network.Server;
 import dev.kelvin.api.network.events.IOnConnectionClosed;
 import dev.kelvin.api.network.events.IOnConnectionFailed;
@@ -15,8 +16,7 @@ import java.util.ArrayList;
 public class HighLevelNetworkAPI {
 
     protected Object netObject;
-    protected Server server;
-    protected Client client;
+    protected NetworkParticipant net;
 
     protected Method[] remoteMethods;
 
@@ -57,63 +57,106 @@ public class HighLevelNetworkAPI {
     }
 
     public void createServer(int port) {
-        if (server == null && client == null) {
-            server = new Server(netObject, this, port);
-            server.start();
-        }
-        else if (server == null)
-            System.err.println("A client is already created on this HighLevelNetwork");
-        else
-            System.err.println("A server is already created on this HighLevelNetwork");
+        if (net == null) {
+            net = new Server(netObject, this, port);
+            net.start();
+        } else
+            System.err.println("A " + net.getClass().getName() + " is already created on this HighLevelNetwork");
     }
 
     public void createClient(String address, int port) {
-        if (client == null && server == null) {
-            client = new Client(netObject, this, address, port);
-            client.start();
-        }
-        else if (server == null)
-            System.err.println("A client is already created on this HighLevelNetwork");
-        else
-            System.err.println("A server is already created on this HighLevelNetwork");
+        if (net == null) {
+            net = new Client(netObject, this, address, port);
+            net.start();
+        } else
+            System.err.println("A " + net.getClass().getName() + " is already created on this HighLevelNetwork");
     }
 
     /**
      *
-     * <h5>
-     *     udp method
-     *     remote call udp
-     *     send unreliable
-     * </h5>
+     * <h1>rcu</h1>
+     *
+     * <h3>
+     *     udp method | remote call udp | send unreliable <br>
+     *
+     *     performs default call for the current {@link NetworkParticipant} <br>
+     *     <br>
+     *     default calls:
+     *     <ul>
+     *         <li>{@link Client} 1: calls the server equals rcu_id(1, ..., ...)</li>
+     *         <li>{@link Server} 0: calls all clients equals rcu_id(0, ..., ...)</li>
+     *     </ul>
+     * </h3>
+     *
+     * @param methodName name of the method on the called {@link NetworkParticipant}
+     * @param args parameters of the method on the called {@link NetworkParticipant}
+     *
+     * @throws NullPointerException if no {@link NetworkParticipant} has been created
+     */
+    public void rcu(String methodName, String...args) {
+        net.rcu(methodName, args);
+    }
+
+    /**
+     *
+     * <h1>rcu_id</h1>
+     *
+     * <h3>
+     *     udp method | remote call udp | send unreliable
+     * </h3>
      *
      * @param userId case 0 send to all, case 1 send to server, case n send to specific peer
-     * @param methodName name of called method on the other side
-     * @param args parameters for called methods on other side
+     * @param methodName name of the method on the called {@link NetworkParticipant}
+     * @param args parameters of the method on the called {@link NetworkParticipant}
+     *
+     * @throws NullPointerException if no {@link NetworkParticipant} has been created
      */
     public void rcu_id(int userId, String methodName, String... args) {
-        if (client != null)
-            client.rcu_id(userId, methodName, args);
-        else
-            server.rcu_id(userId, methodName, args);
+        net.rcu_id(userId, methodName, args);
     }
 
     /**
      *
-     * <h5>
-     *     tcp method
-     *     remote call tcp
-     *     send reliable
-     * </h5>
+     * <h1>rct</h1>
+     *
+     * <h3>
+     *     tcp method | remote call tcp | send reliable <br>
+     *
+     *     performs default call for the current {@link NetworkParticipant} <br>
+     *
+     *     <br>
+     *     default calls:
+     *     <ul>
+     *           <li>{@link Client} 1: calls the server equals rcu_id(1, ..., ...)</li>
+     *           <li>{@link Server} 0: calls all clients equals rcu_id(0, ..., ...)</li>
+     *     </ul>
+     * </h3>
+     *
+     * @param methodName name of the method on the called {@link NetworkParticipant}
+     * @param args parameters of the method on the called {@link NetworkParticipant}
+     *
+     * @throws NullPointerException if no {@link NetworkParticipant} has been created
+     */
+    public void rct(String methodName, String...args) {
+        net.rct(methodName, args);
+    }
+
+    /**
+     *
+     * <h1>rct_id</h1>
+     *
+     * <h3>
+     *     tcp method | remote call tcp | send reliable
+     * </h3>
      *
      * @param userId case 0 send to all, case 1 send to server, case n send to specific peer
      * @param methodName name of called method on the other side
      * @param args parameters for called methods on other side
+     *
+     * @throws NullPointerException if no {@link NetworkParticipant} has been created
      */
     public void rct_id(int userId, String methodName, String... args) {
-        if (client != null)
-            client.rct_id(userId, methodName, args);
-        else
-            server.rct_id(userId, methodName, args);
+        net.rct_id(userId, methodName, args);
     }
 
     /**
@@ -231,8 +274,11 @@ public class HighLevelNetworkAPI {
      * @throws NullPointerException if the method is called when {@link HighLevelNetworkAPI} is used as server
      */
     public void disconnect() {
-        rct_id(1, "//dis");
-        client.stop();
+        if (net instanceof Client) {
+            rct_id(1, "//dis");
+            net.stop();
+        } else
+            throw new NullPointerException("HighLevelNetworkAPI is used as Server!");
     }
 
 }

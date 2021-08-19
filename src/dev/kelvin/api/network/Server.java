@@ -62,6 +62,7 @@ public class Server extends NetworkParticipant {
         }
     }
 
+    @Override
     public void rcu(String methodName, String... args) {
         rcu_id(0, methodName, args);
     }
@@ -89,6 +90,7 @@ public class Server extends NetworkParticipant {
         }
     }
 
+    @Override
     public void rct(String methodName, String... args) {
         rct_id(0, methodName, args);
     }

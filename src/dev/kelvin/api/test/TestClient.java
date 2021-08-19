@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class TestClient {
 
     public static void main(String[] args) {
-        TestClient t = new TestClient();
+        new TestClient();
     }
 
     private final HighLevelNetworkAPI hln;
@@ -25,7 +25,7 @@ public class TestClient {
         String input;
         do {
             input = scan.nextLine();
-            hln.rct_id(1, "receiveMsg", input);
+            hln.rct("receiveMsg", input);
         } while (!input.equals("exit"));
         hln.disconnect();
     }
