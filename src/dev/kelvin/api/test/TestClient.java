@@ -28,6 +28,7 @@ public class TestClient {
             hln.rct("receiveMsg", input);
         } while (!input.equals("exit"));
         hln.disconnect();
+        System.exit(0);
     }
 
     @Remote(1)

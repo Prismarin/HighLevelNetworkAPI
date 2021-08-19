@@ -3,11 +3,15 @@ package dev.kelvin.api;
 import dev.kelvin.api.network.Client;
 import dev.kelvin.api.network.NetworkParticipant;
 import dev.kelvin.api.network.Server;
+import dev.kelvin.api.network.annotaions.NetworkParticipantCreator;
 import dev.kelvin.api.network.events.IOnConnectionClosed;
 import dev.kelvin.api.network.events.IOnConnectionFailed;
 import dev.kelvin.api.network.events.IOnConnectionSucceeded;
+import dev.kelvin.api.network.exceptions.IllegalMethodNameException;
 import dev.kelvin.api.network.exceptions.MissingArgumentException;
 import dev.kelvin.api.network.exceptions.TooManyArgumentsException;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -26,12 +30,18 @@ public class HighLevelNetworkAPI {
 
     /**
      *
-     * @param object is the object in which there are all the remote methods
+     * <h1>{@link HighLevelNetworkAPI}</h1>
+     *
+     * <h3>
+     *     Creates the new {@link HighLevelNetworkAPI}
+     * </h3>
+     *
+     * @param object the object on which remote-methods will be called
      */
-    public HighLevelNetworkAPI(Object object) {
+    public HighLevelNetworkAPI(@NotNull Object object) {
         this.netObject = object;
 
-        getRemoteMethods();
+        fetchRemoteMethods();
 
         onConnectionSucceededList = new ArrayList<>();
         onConnectionClosedList = new ArrayList<>();
@@ -40,14 +50,24 @@ public class HighLevelNetworkAPI {
 
     /**
      *
-     * getRemoteMethods assumes that netObject != null
+     * <h1>Fetch Remote Methods</h1>
+     *
+     * <h3>
+     *     Called when a new networking object is given. <br>
+     *     The method asserts that the netObject != null
+     * </h3>
+     * @throws AssertionError when netObject == null
      */
-    private void getRemoteMethods() {
+    private void fetchRemoteMethods() {
+        assert (netObject != null);
         Method[] allMethods = netObject.getClass().getDeclaredMethods();
         ArrayList<Method> remoteMethods = new ArrayList<>();
         for (Method method : allMethods) {
             if (method.isAnnotationPresent(Remote.class)) {
-                remoteMethods.add(method);
+                if (remoteMethods.stream().filter(method1 -> method1.getName().equals(method.getName())).toList().size() != 1)
+                    remoteMethods.add(method);
+                else
+                    throw new IllegalMethodNameException(method.getName());
             }
         }
         this.remoteMethods = new Method[remoteMethods.size()];
@@ -56,6 +76,35 @@ public class HighLevelNetworkAPI {
         }
     }
 
+    /**
+     *
+     * <h4>@{@link NetworkParticipantCreator}</h4>
+     * <h1>Create Server</h1>
+     *
+     * <h3>
+     *     Creating a {@link Server} object on this {@link HighLevelNetworkAPI} <br>
+     *     With the {@link Server} object following network operations are available:
+     *     <ul>
+     *         <li>Remote Call Udp | rcu</li>
+     *         <li>Remote Call Udp by Id | rcu_id</li>
+     *         <li>Remote Call Tcp | rct</li>
+     *         <li>Remote Call Tcp by Id | rct_id</li>
+     *     </ul>
+     *     Following Events get called:
+     *     <ul>
+     *         <li>{@link IOnConnectionSucceeded}</li>
+     *         <li>{@link IOnConnectionClosed}</li>
+     *     </ul>
+     *     Make sure not to recall this method without closing the current {@link NetworkParticipant}. While
+     *     there is an active {@link Server}, no other {@link NetworkParticipant} can be created. <br>
+     *     Also creating multiple {@link NetworkParticipant} in the same session could lead to small
+     *     resource-leaks. <br>
+     *     <br>
+     * </h3>
+     *
+     * @param port the port on which the server should run
+     */
+    @NetworkParticipantCreator
     public void createServer(int port) {
         if (net == null) {
             net = new Server(netObject, this, port);
@@ -64,6 +113,25 @@ public class HighLevelNetworkAPI {
             System.err.println("A " + net.getClass().getName() + " is already created on this HighLevelNetwork");
     }
 
+    /**
+     *
+     * <h4>@{@link NetworkParticipantCreator}</h4>
+     * <h1>Create Client</h1>
+     *
+     * <h3>
+     *     Creating a {@link Client} object on this {@link HighLevelNetworkAPI} <br>
+     *     With the {@link Client} object all network operations given by the {@link HighLevelNetworkAPI}
+     *     are available. <br>
+     *     Make sure not to recall this method without closing the current {@link NetworkParticipant}. While there
+     *     is an active {@link Client}, no other {@link NetworkParticipant} can be created. <br>
+     *     Also creating multiple {@link NetworkParticipant} in the same session could lead to small
+     *     resource-leaks.
+     * </h3>
+     *
+     * @param address is the ip-address to which the client should connect
+     * @param port is the port on the computer on the host
+     */
+    @NetworkParticipantCreator
     public void createClient(String address, int port) {
         if (net == null) {
             net = new Client(netObject, this, address, port);
@@ -74,7 +142,7 @@ public class HighLevelNetworkAPI {
 
     /**
      *
-     * <h1>rcu</h1>
+     * <h1>Remote Call Udp</h1>
      *
      * <h3>
      *     udp method | remote call udp | send unreliable <br>
@@ -83,8 +151,8 @@ public class HighLevelNetworkAPI {
      *     <br>
      *     default calls:
      *     <ul>
-     *         <li>{@link Client} 1: calls the server equals rcu_id(1, ..., ...)</li>
      *         <li>{@link Server} 0: calls all clients equals rcu_id(0, ..., ...)</li>
+     *         <li>{@link Client} 1: calls the server equals rcu_id(1, ..., ...)</li>
      *     </ul>
      * </h3>
      *
@@ -99,7 +167,7 @@ public class HighLevelNetworkAPI {
 
     /**
      *
-     * <h1>rcu_id</h1>
+     * <h1>Remote Call Udp by Id</h1>
      *
      * <h3>
      *     udp method | remote call udp | send unreliable
@@ -117,7 +185,7 @@ public class HighLevelNetworkAPI {
 
     /**
      *
-     * <h1>rct</h1>
+     * <h1>Remote Call Tcp</h1>
      *
      * <h3>
      *     tcp method | remote call tcp | send reliable <br>
@@ -127,8 +195,8 @@ public class HighLevelNetworkAPI {
      *     <br>
      *     default calls:
      *     <ul>
-     *           <li>{@link Client} 1: calls the server equals rcu_id(1, ..., ...)</li>
      *           <li>{@link Server} 0: calls all clients equals rcu_id(0, ..., ...)</li>
+     *           <li>{@link Client} 1: calls the server equals rcu_id(1, ..., ...)</li>
      *     </ul>
      * </h3>
      *
@@ -143,7 +211,7 @@ public class HighLevelNetworkAPI {
 
     /**
      *
-     * <h1>rct_id</h1>
+     * <h1>Remote Call Tcp by Id</h1>
      *
      * <h3>
      *     tcp method | remote call tcp | send reliable
@@ -224,6 +292,8 @@ public class HighLevelNetworkAPI {
      * @throws IllegalAccessException when the method that is called can't be accessed because it is not public
      */
     public void call(String methodName, String... args) throws InvocationTargetException, IllegalAccessException {
+        if (netObject == null)
+            return;
         Method methodToRun = getMethodByName(methodName);
         if (methodToRun != null) {
             int argNumber = methodToRun.getAnnotation(Remote.class).value();
@@ -259,7 +329,7 @@ public class HighLevelNetworkAPI {
      * @param methodName is the name of the method which is searched
      * @return the method-object || null if !remoteMethods.contains(method -> methodName)
      */
-    private Method getMethodByName(String methodName) {
+    private @Nullable Method getMethodByName(String methodName) {
         for (Method method : remoteMethods) {
             if (method.getName().equals(methodName))
                 return method;

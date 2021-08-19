@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface Remote {
 
-    int value();
+    int value() default 0;
 
 }
