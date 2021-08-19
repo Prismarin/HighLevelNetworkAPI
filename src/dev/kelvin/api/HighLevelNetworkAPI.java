@@ -99,6 +99,7 @@ public class HighLevelNetworkAPI {
      *     there is an active {@link Server}, no other {@link NetworkParticipant} can be created. <br>
      *     Also creating multiple {@link NetworkParticipant} in the same session could lead to small
      *     resource-leaks. <br>
+     *     For big servers it is recommended to exit after closing and restart the application for reopening. <br>
      *     <br>
      * </h3>
      *
@@ -229,8 +230,26 @@ public class HighLevelNetworkAPI {
 
     /**
      *
-     * used for clients when connected to the server - argument for onConnectionSucceeded = 0
-     * used for server when a client just connected - argument for onConnectionSucceeded = userId or given id from a database
+     * <h1>Add {@link IOnConnectionSucceeded}</h1>
+     *
+     * <h3>
+     *     This method adds the given {@link IOnConnectionSucceeded} to the eventhandler. <br>
+     *     <br>
+     *     {@link IOnConnectionSucceeded} is used by:
+     *     <ul>
+     *         <li>{@link Client}</li>
+     *         <li>{@link Server}</li>
+     *     </ul>
+     *
+     *     Method is called for {@link Client} when the {@link Client} just connected successfully to a {@link Server}.
+     *     The argument given by the method will be 0 and is meant to be ignored. <br>
+     *     <br>
+     *     Method is called for {@link Server} when a {@link Client} just has connected successfully. The argument will
+     *     be its given userId by the {@link HighLevelNetworkAPI}. The userId is only for the session the {@link Client}
+     *     is connected to the {@link Server}. As the {@link Client} disconnects, the {@link HighLevelNetworkAPI} will
+     *     lose the userId and attach it later to another {@link Client}. When a {@link Client} reconnects he will get
+     *     a new userId. <br>
+     * </h3>
      *
      * @param onConnectionSucceeded method reference
      */
@@ -240,9 +259,25 @@ public class HighLevelNetworkAPI {
 
     /**
      *
-     * called when a new client has connected to the server
+     * <h1>Trigger {@link IOnConnectionSucceeded}</h1>
      *
-     * @param userId the userId from the new user
+     * <h3>
+     *     Calls all the added {@link IOnConnectionSucceeded} by addOnConnectionSucceeded. <br>
+     *     <br>
+     *     Called by the {@link HighLevelNetworkAPI} in following cases:
+     *     <ul>
+     *         <li>
+     *             {@link Client}: <br>
+     *             When the {@link Client} just successfully connected to a {@link Server}; userId = 0
+     *         </li>
+     *         <li>
+     *             {@link Server}: <br>
+     *             When a {@link Client} just connected to the {@link Server}; userId = new userId given by {@link HighLevelNetworkAPI}
+     *         </li>
+     *     </ul>
+     * </h3>
+     *
+     * @param userId the userId described earlier.
      */
     public void triggerConnectionSucceeded(int userId) {
         for (IOnConnectionSucceeded e : onConnectionSucceededList)
