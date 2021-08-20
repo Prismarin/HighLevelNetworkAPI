@@ -249,6 +249,7 @@ public class HighLevelNetworkAPI {
      *     is connected to the {@link Server}. As the {@link Client} disconnects, the {@link HighLevelNetworkAPI} will
      *     lose the userId and attach it later to another {@link Client}. When a {@link Client} reconnects he will get
      *     a new userId. <br>
+     *     <br>
      * </h3>
      *
      * @param onConnectionSucceeded method reference
@@ -286,7 +287,19 @@ public class HighLevelNetworkAPI {
 
     /**
      *
-     * only used for clients, when failed to connect to given host and port
+     * <h1>Add {@link IOnConnectionFailed}</h1>
+     *
+     * <h3>
+     *     {@link IOnConnectionFailed} is used by:
+     *
+     *     <ul>
+     *         <li>{@link Client}</li>
+     *     </ul>
+     *
+     *     Method is called for {@link Client} when the {@link Client} failed to connect to a {@link Server} on
+     *     given host and port. <br>
+     *     <br>
+     * </h3>
      *
      * @param onConnectionFailed method reference
      */
@@ -295,6 +308,20 @@ public class HighLevelNetworkAPI {
     }
 
     /**
+     *
+     * <h1>Trigger {@link IOnConnectionFailed}</h1>
+     *
+     * <h3>
+     *     Calls the added {@link IOnConnectionFailed} by addOnConnectionFailed. <br>
+     *     <br>
+     *     Called by the {@link HighLevelNetworkAPI} in following cases:
+     *     <ul>
+     *         <li>
+     *             {@link Client}:<br>
+     *             When the {@link Client} failed to connect to a {@link Server}
+     *         </li>
+     *     </ul>
+     * </h3>
      *
      * called when the client tried to connect to a host which refused the client
      */
@@ -305,8 +332,20 @@ public class HighLevelNetworkAPI {
 
     /**
      *
-     * used for clients when the server has closed the connection or crashed
-     * used for server when a client has disconnected
+     * <h1>Add {@link IOnConnectionClosed}</h1>
+     *
+     * <h3>
+     *     {@link IOnConnectionClosed} is used by:
+     *     <ul>
+     *         <li>{@link Client}</li>
+     *         <li>{@link Server}</li>
+     *     </ul>
+     *     Method is called for {@link Client} when the {@link Server} closed the connection without that the {@link Client}
+     *     requested a disconnection <br>
+     *     <br>
+     *     Method is called for {@link Server} when a {@link Client} disconnected or lost the connection <br>
+     *     <br>
+     * </h3>
      *
      * @param onConnectionClosed method reference
      */
@@ -314,12 +353,45 @@ public class HighLevelNetworkAPI {
         onConnectionClosedList.add(onConnectionClosed);
     }
 
+    /**
+     *
+     * <h1>Trigger {@link IOnConnectionClosed}</h1>
+     *
+     * <h3>
+     *     Called by the {@link HighLevelNetworkAPI} in following cases:
+     *     <ul>
+     *         <li>
+     *             {@link Client}:
+     *             When the {@link Server} closed the connection without signaling to the {@link Client} that the
+     *             connection will be closed; userId = 0
+     *         </li>
+     *         <li>
+     *             {@link Server}:
+     *             When a {@link Client} disconnects or loses the connection to the {@link Server}; userId = the
+     *             userId of the disconnected {@link Client}
+     *         </li>
+     *     </ul>
+     * </h3>
+     *
+     * @param userId the userId described earlier
+     */
     public void triggerConnectionClosed(int userId) {
         for (IOnConnectionClosed e : onConnectionClosedList)
             e.onConnectionClosed(userId);
     }
 
     /**
+     *
+     * <h1>Call</h1>
+     *
+     * <h3>
+     *     Calls the {@link Method} by the name in the netObject with the given String[] as arguments. <br>
+     *     <br>
+     *     The call method can only call Methods annotated with @{@link Remote}. This is because the method-name
+     *     gets searched in the array of @{@link Remote} methods. This is a security layer, so that a {@link NetworkParticipant}
+     *     isn't capable of calling any method on an other {@link NetworkParticipant}. <br>
+     *     <br>
+     * </h3>
      *
      * @param methodName the name of the method that will be called
      * @param args the arguments for the method
@@ -332,7 +404,13 @@ public class HighLevelNetworkAPI {
         Method methodToRun = getMethodByName(methodName);
         if (methodToRun != null) {
             int argNumber = methodToRun.getAnnotation(Remote.class).value();
-            if (argNumber < args.length)
+            if (argNumber == -1) {
+                if (args.length <= 0) {
+                    throw new MissingArgumentException(methodName, 0, 1);
+                } else {
+                    methodToRun.invoke(netObject, (Object) args);
+                }
+            } else if (argNumber < args.length)
                 throw new TooManyArgumentsException(methodName, argNumber, args.length);
             else if (argNumber > args.length)
                 throw new MissingArgumentException(methodName, args.length, argNumber);
@@ -361,6 +439,13 @@ public class HighLevelNetworkAPI {
 
     /**
      *
+     * <h1>@{@link Nullable} Get Method by Name</h1>
+     *
+     * <h3>
+     *     Searches and returns the remote-method by the given name. <br>
+     *     <br>
+     * </h3>
+     *
      * @param methodName is the name of the method which is searched
      * @return the method-object || null if !remoteMethods.contains(method -> methodName)
      */
@@ -374,9 +459,20 @@ public class HighLevelNetworkAPI {
 
     /**
      *
-     * client method to disconnect from the server
+     * <h1>Disconnect</h1>
      *
-     * @throws NullPointerException if the method is called when {@link HighLevelNetworkAPI} is used as server
+     * <h3>
+     *     Usable in following cases:
+     *     <ul>
+     *         <li>
+     *             {@link Client}: <br>
+     *             The Client can message the {@link Server} that he is going to close the connection. <br>
+     *             <br>
+     *         </li>
+     *     </ul>
+     * </h3>
+     *
+     * @throws NullPointerException if the method is called when {@link HighLevelNetworkAPI} is not used as {@link Client}
      */
     public void disconnect() {
         if (net instanceof Client) {
