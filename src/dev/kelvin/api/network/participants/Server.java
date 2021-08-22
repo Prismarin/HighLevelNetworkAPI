@@ -1,7 +1,8 @@
-package dev.kelvin.api.network;
+package dev.kelvin.api.network.participants;
 
 import dev.beni.utils.SocketDict;
 import dev.kelvin.api.HighLevelNetworkAPI;
+import dev.kelvin.api.network.NetworkParticipant;
 import dev.kelvin.api.network.info.ConnectionInfo;
 import dev.kelvin.api.network.utils.Utils;
 
@@ -115,18 +116,17 @@ public class Server extends NetworkParticipant {
         while (running) {
             ConnectionInfo newClient = null;
             boolean use = true;
+            int userId = generateUniqueUserId();
             try {
-                newClient = new ConnectionInfo(hln, tcpSocket.accept());
+                newClient = new ConnectionInfo(hln, userId, tcpSocket.accept());
             } catch (IOException e) {
                 e.printStackTrace();
                 use = false;
             }
 
             if (use) {
-                int userId = generateUniqueUserId();
                 clients.put(userId, newClient);
                 newClient.start();
-                //trigger event client connected with userId
                 hln.triggerConnectionSucceeded(userId);
             }
         }

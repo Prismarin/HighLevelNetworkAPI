@@ -1,8 +1,8 @@
 package dev.kelvin.api;
 
-import dev.kelvin.api.network.Client;
+import dev.kelvin.api.network.participants.Client;
 import dev.kelvin.api.network.NetworkParticipant;
-import dev.kelvin.api.network.Server;
+import dev.kelvin.api.network.participants.Server;
 import dev.kelvin.api.network.annotaions.NetworkParticipantCreator;
 import dev.kelvin.api.network.events.IOnConnectionClosed;
 import dev.kelvin.api.network.events.IOnConnectionFailed;
@@ -30,7 +30,7 @@ public class HighLevelNetworkAPI {
 
     /**
      *
-     * <h1>{@link HighLevelNetworkAPI}</h1>
+     * <h1>< init ></h1>
      *
      * <h3>
      *     Creates the new {@link HighLevelNetworkAPI}

@@ -17,13 +17,16 @@ public class ConnectionInfo extends Thread {
 
     public final InetAddress address;
     public final int port;
+
+    public final int userId;
     public final Socket tcpSocket;
 
     public final DataInputStream in;
     public final DataOutputStream out;
 
-    public ConnectionInfo(HighLevelNetworkAPI hln, Socket tcpSocket) throws IOException {
+    public ConnectionInfo(HighLevelNetworkAPI hln, int userId, Socket tcpSocket) throws IOException {
         this.hln = hln;
+        this.userId = userId;
         this.tcpSocket = tcpSocket;
         this.address = tcpSocket.getInetAddress();
         this.port = tcpSocket.getPort();
@@ -40,6 +43,7 @@ public class ConnectionInfo extends Thread {
                 SocketDict dict = SocketDict.fromString(input);
                 if (dict.get("m").equals("//dis")) {
                     tcpSocket.close();
+                    hln.triggerConnectionClosed(userId);
                     break;
                 }
                 Utils.workWithReceivedData(hln, dict);

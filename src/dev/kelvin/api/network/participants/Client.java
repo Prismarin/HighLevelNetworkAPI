@@ -1,7 +1,8 @@
-package dev.kelvin.api.network;
+package dev.kelvin.api.network.participants;
 
 import dev.beni.utils.SocketDict;
 import dev.kelvin.api.HighLevelNetworkAPI;
+import dev.kelvin.api.network.NetworkParticipant;
 import dev.kelvin.api.network.utils.Utils;
 
 import java.io.DataInputStream;
@@ -36,6 +37,8 @@ public class Client extends NetworkParticipant {
 
             in = new DataInputStream(tcpSocket.getInputStream());
             out = new DataOutputStream(tcpSocket.getOutputStream());
+
+            hln.triggerConnectionSucceeded(0);
         } catch (UnknownHostException | ConnectException e) {
             hln.triggerConnectionFailed();
         } catch (IOException e) {
@@ -116,6 +119,7 @@ public class Client extends NetworkParticipant {
                 SocketDict receiveDict = SocketDict.fromString(input);
                 Utils.workWithReceivedData(hln, receiveDict);
             } catch (EOFException ignored) {
+                hln.triggerConnectionClosed(0);
                 break;
             } catch (IOException e) {
                 e.printStackTrace();
