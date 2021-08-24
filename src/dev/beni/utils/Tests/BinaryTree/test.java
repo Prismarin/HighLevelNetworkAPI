@@ -2,7 +2,7 @@ package dev.beni.utils.Tests.BinaryTree;
 
 public class test {
 
-    public static void main(String args[]){
+    public static void main(String[] args){
         Tree tree = new Tree();
         Tree.Nodenotused root = new Tree.Nodenotused(5);
         System.out.println("Binary Tree example");

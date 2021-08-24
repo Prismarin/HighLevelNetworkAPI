@@ -1,4 +1,4 @@
-package dev.kelvin.api.network.participants;
+package dev.kelvin.api.network.participants.normal;
 
 import dev.beni.utils.SocketDict;
 import dev.kelvin.api.HighLevelNetworkAPI;
