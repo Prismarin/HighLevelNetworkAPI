@@ -4,7 +4,7 @@ public class test {
 
     public static void main(String args[]){
         Tree tree = new Tree();
-        Tree.Node root = new Tree.Node(5);
+        Tree.Nodenotused root = new Tree.Nodenotused(5);
         System.out.println("Binary Tree example");
         System.out.println("building Tree with root value " + root.value);
 
@@ -18,13 +18,17 @@ public class test {
         tree.insert(root, 2);
         System.out.println("Traversing Tree in Order");
         tree.traverseInOrder(root);
-        Tree.Node found = tree.find(3, root);
+        Tree.Nodenotused found = tree.find(3, root);
         if(found != null)
             System.out.println("found: " + found.value);
         else
             System.out.println("not found");
 
         Tree.Savings savings = new Tree.Savings("name", "Tom");
+
+
+        String lol = "Name";
+        System.out.println(lol.compareToIgnoreCase("Name"));
     }
 
 }

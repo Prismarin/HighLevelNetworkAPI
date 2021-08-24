@@ -2,10 +2,10 @@ package dev.beni.utils.Tests.BinaryTree;
 
 public class Tree {
 
-    static class Node{
+    static class Nodenotused{
         int value;
-        Node left, right;
-        Node(int value){
+        Nodenotused left, right;
+        Nodenotused(int value){
             this.value = value;
             left = null;
             right = null;
@@ -26,14 +26,14 @@ public class Tree {
         }
     }
 
-    public void insert(Node node, int value){
+    public void insert(Nodenotused node, int value){
         if(value < node.value){
 
             if(node.left != null){
                 insert(node.left, value);
             } else {
                 System.out.println("Inserted " + value + " to left of " + node.value);
-                node.left = new Node(value);
+                node.left = new Nodenotused(value);
             }
 
         } else if (value > node.value){
@@ -42,12 +42,12 @@ public class Tree {
                 insert(node.right, value);
             } else {
                 System.out.println("Inserted " + value + " to right of " + node.value);
-                node.right = new Node(value);
+                node.right = new Nodenotused(value);
             }
         }
     }
 
-    public void traverseInOrder(Node node){
+    public void traverseInOrder(Nodenotused node){
         if(node != null){
             traverseInOrder(node.left);
             System.out.println(node.value);
@@ -55,7 +55,7 @@ public class Tree {
         }
     }
 
-    public Node find(int number, Node node){
+    public Nodenotused find(int number, Nodenotused node){
         while (node != null) {
             if (number > node.value)
                 node = node.right;
