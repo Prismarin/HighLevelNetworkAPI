@@ -1,8 +1,8 @@
 package dev.kelvin.api;
 
-import dev.kelvin.api.network.participants.normal.Client;
+import dev.kelvin.api.network.participants.Client;
 import dev.kelvin.api.network.NetworkParticipant;
-import dev.kelvin.api.network.participants.normal.Server;
+import dev.kelvin.api.network.participants.Server;
 import dev.kelvin.api.network.annotaions.NetworkParticipantCreator;
 import dev.kelvin.api.network.events.IOnConnectionClosed;
 import dev.kelvin.api.network.events.IOnConnectionFailed;
@@ -480,16 +480,6 @@ public class HighLevelNetworkAPI {
             net.stop();
         } else
             throw new NullPointerException("HighLevelNetworkAPI is used as Server!");
-    }
-
-    /**
-     *
-     * <h1>@{@link Nullable} Get {@link NetworkParticipant}</h1>
-     *
-     * @return the current {@link NetworkParticipant}
-     */
-    public @Nullable NetworkParticipant getNetworkParticipant() {
-        return net;
     }
 
 }
