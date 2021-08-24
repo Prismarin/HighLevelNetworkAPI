@@ -1,8 +1,8 @@
 package dev.kelvin.api;
 
-import dev.kelvin.api.network.participants.Client;
+import dev.kelvin.api.network.participants.normal.Client;
 import dev.kelvin.api.network.NetworkParticipant;
-import dev.kelvin.api.network.participants.Server;
+import dev.kelvin.api.network.participants.normal.Server;
 import dev.kelvin.api.network.annotaions.NetworkParticipantCreator;
 import dev.kelvin.api.network.events.IOnConnectionClosed;
 import dev.kelvin.api.network.events.IOnConnectionFailed;
