@@ -1,6 +1,6 @@
 package dev.beni.utils.Tests.BinaryTree;
 
-public class ThisIsTheBossOfTheSocketDictTree {
+public class ThisIsTheBossOfTheSocketDictTrees {
 
     static class Node{
         String value;
@@ -18,7 +18,7 @@ public class ThisIsTheBossOfTheSocketDictTree {
     }
 
     public void insert(Node node, String key, String value){
-        if(key.compareToIgnoreCase(node.key) == 1){
+        if(key.compareToIgnoreCase(node.key) < 0){
 
             if(node.left != null){
                 insert(node.left, key, value);
@@ -27,7 +27,7 @@ public class ThisIsTheBossOfTheSocketDictTree {
                 node.left = new Node(key, value);
             }
 
-        } else if (key.compareToIgnoreCase(node.key) == 1){
+        } else if (key.compareToIgnoreCase(node.key) > 0){
 
             if(node.right != null){
                 insert(node.right, key, value);

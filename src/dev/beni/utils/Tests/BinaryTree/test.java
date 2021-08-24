@@ -29,6 +29,9 @@ public class test {
 
         String lol = "Name";
         System.out.println(lol.compareToIgnoreCase("Name"));
+        System.out.println(lol.compareToIgnoreCase("name"));
+        System.out.println(lol.compareToIgnoreCase("lol"));
+        System.out.println(lol.compareToIgnoreCase("out"));
     }
 
 }
