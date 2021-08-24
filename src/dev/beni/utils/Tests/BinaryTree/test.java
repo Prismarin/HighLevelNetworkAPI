@@ -32,6 +32,19 @@ public class test {
         System.out.println(lol.compareToIgnoreCase("name"));
         System.out.println(lol.compareToIgnoreCase("lol"));
         System.out.println(lol.compareToIgnoreCase("out"));
+
+        ThisIsTheBossOfTheSocketDictTrees tree2 = new ThisIsTheBossOfTheSocketDictTrees();
+        ThisIsTheBossOfTheSocketDictTrees.Node rootnode = new ThisIsTheBossOfTheSocketDictTrees.Node("b", "b");
+        tree2.insert(rootnode, "a", "a");
+        tree2.insert(rootnode, "c", "c");
+        tree2.insert(rootnode, "Z", "Z");
+        tree2.insert(rootnode, "q", "q");
+        tree2.insert(rootnode, "k", "k");
+        tree2.traverseInOrder(rootnode);
+        ThisIsTheBossOfTheSocketDictTrees.Node lul = tree2.find_Node_with_key("c", rootnode);
+        System.out.println(lul.key);
+        ThisIsTheBossOfTheSocketDictTrees.Node lal = tree2.find_Node_containing_Value("Z", rootnode);
+        System.out.println(lal.key);
     }
 
 }
