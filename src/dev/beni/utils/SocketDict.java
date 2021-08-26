@@ -1,193 +1,481 @@
 package dev.beni.utils;
 
-import java.util.*;
+import java.util.ArrayList;
 
 public class SocketDict {
 
-    private final ArrayList<String> keys;
-    private final ArrayList<String> values;
+    public Node root;
 
-    public SocketDict() {
-        keys = new ArrayList<>();
-        values = new ArrayList<>();
+    public SocketDict(String key, String value){
+        root = new Node(key, value);
     }
 
-    public void printout() {
-        for (int i = 0; i < keys.size(); i++) {
-            System.out.print("(key:");
-            System.out.print(keys.get(i));
-            System.out.print(", value:");
-            System.out.print(values.get(i) + ") ");
+    static class Node{
+
+        String value;
+        String key;
+        Node left, right;
+
+        Node(String key, String value){
+            this.key = key;
+            this.value = value;
+            left = null;
+            right = null;
         }
-        System.out.println();
+
+        //The name says, what it does
+        public void setValue(String newValue){
+            value = newValue;
+        }
+    }
+
+    public void add(String key, String value){
+
+        //inserts a new Node into the tree
+        if(key.compareToIgnoreCase(root.key) < 0){
+
+            if(root.left != null){
+                insert2(root.left, key, value);
+            } else {
+                System.out.println("Inserted " + value + " to left of " + root.value);
+                root.left = new Node(key, value);
+            }
+
+        } else if (key.compareToIgnoreCase(root.key) > 0){
+
+            if(root.right != null){
+                insert2(root.right, key, value);
+            } else {
+                System.out.println("Inserted " + value + " to right of " + root.value);
+                root.right = new Node(key, value);
+            }
+
+        }
+
+    }
+
+    private void insert2(Node node, String key, String value){
+
+        //inserts a new Node into the tree
+        if(key.compareToIgnoreCase(node.key) < 0){
+
+            if(node.left != null){
+                insert2(node.left, key, value);
+            } else {
+                System.out.println("Inserted " + value + " to left of " + node.value);
+                node.left = new Node(key, value);
+            }
+
+        } else if (key.compareToIgnoreCase(node.key) > 0){
+
+            if(node.right != null){
+                insert2(node.right, key, value);
+            } else {
+                System.out.println("Inserted " + value + " to right of " + node.value);
+                node.right = new Node(key, value);
+            }
+
+        }
+
+    }
+
+    public void printout(){
+
+        //traverses through the tree and prints the keys in alphabetic order
+        if(root != null){
+            traverseInOrder2(root.left);
+            System.out.print("(key:");
+            System.out.print(root.key);
+            System.out.print(", value:");
+            System.out.print(root.value + ") ");
+            traverseInOrder2(root.right);
+        }
+
+    }
+
+    private void traverseInOrder2(Node node){
+
+        //traverses through the tree and prints the keys in alphabetic order
+        if(node != null){
+            traverseInOrder2(node.left);
+            System.out.print("(key:");
+            System.out.print(node.key);
+            System.out.print(", value:");
+            System.out.print(node.value + ") ");
+            traverseInOrder2(node.right);
+        }
+
+    }
+
+    public ArrayList<Node> traverseInOrderWithPuttingEverythingInAnArraylist(ArrayList<Node> list){
+
+        //traverses through the tree and puts the Nodes into an ArrayList sorted in alphabetical order
+        if(root != null){
+            traverseInOrderWithPuttingEverythingInAnArraylist2(root.left, list);
+            list.add(root);
+            traverseInOrderWithPuttingEverythingInAnArraylist2(root.right, list);
+        }
+
+        return list;
+
+    }
+
+    private ArrayList<Node> traverseInOrderWithPuttingEverythingInAnArraylist2(Node node, ArrayList<Node> list){
+
+        //traverses through the tree and puts the Nodes into an ArrayList sorted in alphabetical order
+        if(node != null){
+            traverseInOrderWithPuttingEverythingInAnArraylist2(node.left, list);
+            list.add(node);
+            traverseInOrderWithPuttingEverythingInAnArraylist2(node.right, list);
+        }
+
+        return list;
+
+    }
+
+    public Node find_Node_with_key(String keyToBeFound){
+
+        //finds the Node with the given key
+        Node node = root;
+        while (node != null) {
+
+            if(keyToBeFound.compareToIgnoreCase(node.key) > 0)
+                node = node.right;
+            else if(keyToBeFound.compareToIgnoreCase(node.key) < 0)
+                node = node.left;
+            else
+                //keyToBeFound == node.key
+                return node;
+        }
+
+        return null;
+
+    }
+
+    public Node find_Predecessor_Node_of_Node_with_key(String keyToBeFound){
+
+        //finds the predecessor of a Node with specific key
+        Node node = root;
+        Node node_before = null;
+        while (node != null) {
+
+            if(keyToBeFound.compareToIgnoreCase(node.key) > 0) {
+                node_before = node;
+                node = node.right;
+            } else if(keyToBeFound.compareToIgnoreCase(node.key) < 0) {
+                node_before = node;
+                node = node.left;
+            } else
+                //keyToBeFound == node.key
+                return node_before;
+
+        }
+        return null;
+
+    }
+
+    public Node find_Node_containing_Value(String valueToBeFound){
+
+        //finds a Node, that contains a specific value
+        Node node = root;
+        while (node != null) {
+
+            if(valueToBeFound.compareToIgnoreCase(node.value) > 0)
+                node = node.right;
+            else if(valueToBeFound.compareToIgnoreCase(node.value) < 0)
+                node = node.left;
+            else
+                //valueToBeFound == node.value
+                return node;
+
+        }
+        return null;
 
     }
 
     public void setValueByKey(String key, String new_value){
-        for (int i = 0; i < keys.size(); i++) {
-            if(keys.get(i).equals(key)){
-                values.set(i, new_value);
-                break;
+        find_Node_with_key(key).value = new_value;
+    }
+
+    public void remove(String keyOfNodeToBeDeleted) {
+
+        //creates all the necessary variables
+        Node node = root;
+        node = find_Node_with_key(keyOfNodeToBeDeleted);
+        Node node_before = find_Predecessor_Node_of_Node_with_key(keyOfNodeToBeDeleted);
+        int direction; //left = 0; right = 1
+
+
+        //checks which successor node is the one to be deleted
+        if(node_before.left != null) {
+
+            if (keyOfNodeToBeDeleted.equals(node_before.left.key)) {
+                direction = 0;
+            } else {
+                direction = 1;
             }
+
+        } else if (node_before.right != null){
+            direction = 1;
+        } else{
+            direction = 2;
         }
-    }
 
-    public void setValueByPos(int pos, String new_value){
-        values.set(pos, new_value);
-    }
+        //Node to be deleted is a leaf node
+        if(node.left == null && node.right == null && direction != 2){
 
-    public void add(String key, String value) {
-        //adds new values to the Lists
-        if(!keys.contains(key)) {
-            keys.add(key);
-            values.add(value);
-        }
-    }
-
-    public void remove(String keyname){
-        //removes values from the Lists
-        for (int i = 0; i < keys.size(); i++) {
-            if (keys.get(i).equals(keyname)){
-                keys.remove(i);
-                values.remove(i);
-                break;
+            //checks which direction the Node to be deleted to its predecessor Node is
+            if(direction == 0){
+                //"deletes" it when on left side of successor node (more like sets successors left value to null)
+                node_before.left = null;
+            } else {
+                //"deletes" it when on right side of successor node (aka sets successors right value to null)
+                node_before.right = null;
             }
+
         }
+
+        //if the node to be deleted has successor nodes on its left and right
+        else if(node.left != null && node.right != null && direction != 2){
+
+            //checks which direction the Node to be deleted to its predecessor Node is
+            if(direction == 0){
+
+                //Puts all the Nodes on the right of the Node to be deleted into an ArrayList
+                ArrayList<Node> nodesOnTheRight = new ArrayList<>();
+                nodesOnTheRight = traverseInOrderWithPuttingEverythingInAnArraylist2(node.right, nodesOnTheRight);
+
+                //Moves the Node to the left of the Node to be deleted one level up and deletes the Node at the same time
+                node_before.left = node.left;
+
+                //Inserts all the Nodes from the ArrayList created earlier into the Tree again
+                for(int i = 0; i < nodesOnTheRight.size(); i++) {
+                    add(nodesOnTheRight.get(i).key, nodesOnTheRight.get(i).key);
+                }
+
+            } else {
+
+                //Puts all the Nodes on the left of the Node to be deleted into an ArrayList
+                ArrayList<Node> nodesOnTheLeft = new ArrayList<>();
+                nodesOnTheLeft = traverseInOrderWithPuttingEverythingInAnArraylist2(node.left, nodesOnTheLeft);
+
+                //Moves the Node to the right of the Node to be deleted one level up and deletes the Node at the same time
+                node_before.right = node.right;
+
+                //Inserts all the Nodes from the ArrayList created earlier into the Tree again
+                for(int i = 0; i < nodesOnTheLeft.size(); i++) {
+                    add(nodesOnTheLeft.get(i).key, nodesOnTheLeft.get(i).key);
+                }
+
+            }
+
+        }
+
+        //if the node to be deleted has successor nodes only on its right
+        else if(node.left == null && node.right != null  && direction != 2){
+
+            //checks which direction the Node to be deleted to its predecessor Node is
+            if(direction == 0){
+
+                //Puts all the Nodes on the right of the Node to be deleted into an ArrayList
+                ArrayList<Node> nodesOnTheRight = new ArrayList<>();
+                nodesOnTheRight = traverseInOrderWithPuttingEverythingInAnArraylist2(node.right, nodesOnTheRight);
+
+                //Removes the Node by setting its predecessors left value to null
+                node_before.left = null;
+
+                //Inserts all the Nodes from the ArrayList created earlier into the Tree again
+                for(int i = 0; i < nodesOnTheRight.size(); i++) {
+                    add(nodesOnTheRight.get(i).key, nodesOnTheRight.get(i).key);
+                }
+
+            } else {
+
+                //Moves the Node to the right of the Node to be deleted one level up and deletes the Node at the same time
+                //Removes the Node by setting its predecessors left value to its own left values
+                node_before.right = node.right;
+
+            }
+
+        }
+
+        //if the node to be deleted has successor nodes only on its left
+        else if(node.left != null && node.right == null && direction != 2){
+
+            //checks which direction the Node to be deleted to its predecessor Node is
+            if(direction == 0){
+
+                //Moves the Node to the right of the Node to be deleted one level up and deletes the Node at the same time
+                //Removes the Node by setting its predecessors left value to its left values
+                node_before.left = node.left;
+
+            } else {
+
+                //Puts all the Nodes on the left of the Node to be deleted into an ArrayList
+                ArrayList<Node> nodesOnTheLeft = new ArrayList<>();
+                nodesOnTheLeft = traverseInOrderWithPuttingEverythingInAnArraylist2(node.left, nodesOnTheLeft);
+
+                //Removes the Node by setting its predecessors left value to null
+                node_before.right = null;
+
+                //Inserts all the Nodes from the ArrayList created earlier into the Tree again
+                for(int i = 0; i < nodesOnTheLeft.size(); i++) {
+                    add(nodesOnTheLeft.get(i).key, nodesOnTheLeft.get(i).key);
+                }
+
+            }
+
+        }
+        else {
+            //just for catching stupid errors
+        }
+
     }
 
-    public String get(String key) {
-        for (int i = 0; i < keys.size(); i++) {
-            if (keys.get(i).equals(key)) {
-                return values.get(i);
-            }
+    private String traverseToRight(){
+
+        //traverses through the tree, starting with the root Node and continues with the right Node of the root Node
+        StringBuilder string = new StringBuilder();
+        if(root != null){
+            string.append("{");
+            string.append(root.key);
+            string.append("\\d");
+            string.append(root.value);
+            string.append("}");
+            traverseInOrder3(root.right, string);
+            traverseInOrder3(root.left, string);
         }
-        return null;
+        return string.toString();
+
+    }
+
+    private String traverseInOrder3(Node node, StringBuilder string){
+
+        //traverses through the tree
+        if(node != null){
+            string.append("{");
+            string.append(node.key);
+            string.append("\\d");
+            string.append(node.value);
+            string.append("}");
+            traverseInOrder3(node.left, string);
+            traverseInOrder3(node.right, string);
+        }
+        return string.toString();
+
     }
 
     @Override
-    public String toString() {
-        //converts everything to a String in order to send it over sockets
-        StringBuilder stringified = new StringBuilder("{");
-        toStringListBuilder(stringified, keys);
-        stringified.append("}{");
-        toStringListBuilder(stringified, values);
-        stringified.append("}");
-        return stringified.toString();
+    public String toString(){
+        String string = traverseToRight();
+        return string;
     }
 
-    private void toStringListBuilder(StringBuilder stringified, ArrayList<String> values) {
-        for (int i = 0; i < keys.size(); i++) {
-            int len = keys.size() - 1;
-            if(i == len){
-                stringified.append(values.get(i));
-            } else {
-                stringified.append(values.get(i));
-                stringified.append("\\d");
-            }
-        }
-    }
-
-    public static SocketDict fromString(String string) {
-        //converts the created String (made in toString()) back to a new SocketDict object
-        SocketDict converted_from_String = new SocketDict();
-
-        //finds where "keys-part" ends
-        int keys_end = 0;
+    private int findEnd(String string){
+        int end = 0;
         for (int i = 0; i < string.length(); i++) {
             char character = string.charAt(i);
             if(character == '}'){
-                keys_end = i + 1;
+                end = i + 1;
                 break;
             }
         }
+        return end;
+    }
 
-        //gets all the keys and puts them into the keys_from_string List
-        int end_of_last_key = 1;
-
-        for (int i = 1; i < keys_end; i++) {
+    private Node convertKeyAndValueFromString(String string){
+        int beginnigOfValue = 0;
+        String key = null;
+        String value = null;
+        for (int i = 0; i < string.length(); i++) {
             char character = string.charAt(i);
             if(character == '\\'){
                 if(string.charAt(i + 1) == 'd'){
-                    converted_from_String.add(string.substring(end_of_last_key, i), "");
-                    end_of_last_key = i + 2;
+                    key = string.substring(0, i);
+                    beginnigOfValue = i + 2;
+                    break;
                 }
-            } else if(character == '}'){
-                converted_from_String.add(string.substring(end_of_last_key, i), "");
+            }
+        }
+        for (int i = beginnigOfValue; i < string.length(); i++) {
+            char character = string.charAt(i);
+            if(character == '}'){
+                value = string.substring(beginnigOfValue, i);
                 break;
             }
         }
+        Node node = new Node(key, value);
+        return node;
+    }
 
-        //gets all the values and puts them into the values_from_string List
-        int values_beginning = keys_end + 1;
-        int end_of_last_val = values_beginning;
-        int pos = 0;
+    public SocketDict fromString(String string){
+        SocketDict converted_from_String;
+        int end = findEnd(string);
+        int beginning = 1;
+        Node nextnode = null;
 
-        for (int i = values_beginning; i < string.length() + 1; i++) {
-            char character = string.charAt(i);
-            if(character == '\\'){
-                if(string.charAt(i + 1) == 'd'){
-                    converted_from_String.setValueByPos(pos, string.substring(end_of_last_val, i));
-                    end_of_last_val = i + 2;
-                    pos++;
-                }
-            } else if(character == '}'){
-                converted_from_String.setValueByPos(pos, string.substring(end_of_last_val, i));
+
+        Node firstnode = convertKeyAndValueFromString(string.substring(beginning, end));
+
+        converted_from_String = new SocketDict(firstnode.key, firstnode.value);
+        System.out.println("first Node created");
+
+        while(end <= string.length()) {
+
+            beginning = end + 1;
+            if(beginning < string.length()){
+                string = string.substring(beginning);
+            } else {
                 break;
             }
+            end = findEnd(string);
+            nextnode = convertKeyAndValueFromString(string);
+            converted_from_String.add(nextnode.key, nextnode.value);
+
         }
 
         return converted_from_String;
     }
 
-    public boolean canBeConvertedToInteger(String key_for_value_to_be_checked) {
-        if(keys.contains(key_for_value_to_be_checked)) {
-            for (int i = 0; i < keys.size(); i++) {
-                if (keys.get(i).equals(key_for_value_to_be_checked)) {
-                    try {
-                        Integer.parseInt(values.get(i));
-                        return true;
-                    } catch (Exception NumberFormatException) {
-                        return false;
-                    }
-                }
+    public boolean canBeConvertedToDouble(String key_for_value_to_be_checked){
+        if (find_Node_with_key(key_for_value_to_be_checked).key.equals(key_for_value_to_be_checked)) {
+            try {
+                Double.parseDouble(find_Node_with_key(key_for_value_to_be_checked).value);
+                return true;
+            } catch (Exception ignored) {
+                return false;
             }
         }
         return false;
     }
 
-    public boolean canBeConvertedToDouble(String key_for_value_to_be_checked) {
-        if(keys.contains(key_for_value_to_be_checked)) {
-            for (int i = 0; i < keys.size(); i++) {
-                if (keys.get(i).equals(key_for_value_to_be_checked)) {
-                    try {
-                        Double.parseDouble(values.get(i));
-                        return true;
-                    } catch (Exception ignored) {
-                        return false;
-                    }
-                }
+    public boolean canBeConvertedToInteger(String key_for_value_to_be_checked){
+        if (find_Node_with_key(key_for_value_to_be_checked).equals(key_for_value_to_be_checked)) {
+            try {
+                Integer.parseInt(find_Node_with_key(key_for_value_to_be_checked).value);
+                return true;
+            } catch (Exception ignored) {
+                return false;
             }
         }
         return false;
     }
 
-    public Integer convertToInteger(String key_for_value_to_be_converted){
-        int integer = 0;
-        for (int i = 0; i < keys.size(); i++) {
-            if (keys.get(i).equals(key_for_value_to_be_converted)) {
-                integer = Integer.parseInt(values.get(i));
-            }
+    public Double convertToDouble(String key_for_value_to_be_checked){
+        double integer = 0.0;
+        if (find_Node_with_key(key_for_value_to_be_checked).key.equals(key_for_value_to_be_checked)) {
+            integer = Double.parseDouble(find_Node_with_key(key_for_value_to_be_checked).value);
         }
+
         return integer;
     }
 
-    public Double convertToDouble(String key_for_value_to_be_converted){
-        double integer = 0.0;
-        for (int i = 0; i < keys.size(); i++) {
-            if (keys.get(i).equals(key_for_value_to_be_converted)) {
-                integer = Double.parseDouble(values.get(i));
-            }
+    public Integer convertToInteger(String key_for_value_to_be_checked){
+        int integer = 0;
+        if (find_Node_with_key(key_for_value_to_be_checked).key.equals(key_for_value_to_be_checked)) {
+            integer = Integer.parseInt(find_Node_with_key(key_for_value_to_be_checked).value);
         }
+
         return integer;
     }
 }

@@ -5,7 +5,7 @@ import dev.beni.utils.SocketDict;
 public class test {
 
     public static void main(String[] args) {
-        SocketDict socdic = new SocketDict();
+        SocketDict socdic = new SocketDict("", "");
 
         socdic.add("name", "tom");
         socdic.add("size", "190");
@@ -32,7 +32,6 @@ public class test {
         System.out.println();
         System.out.println();
         socdic.add("name", "John");
-        //socdic.printoutstreams();
     }
 
 }
