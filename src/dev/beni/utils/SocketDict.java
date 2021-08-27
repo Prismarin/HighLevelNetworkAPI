@@ -133,7 +133,7 @@ public class SocketDict {
 
     }
 
-    public Node find_Node_with_key(String keyToBeFound){
+    public Node find_Node_with_Key(String keyToBeFound){
 
         //finds the Node with the given key
         Node node = root;
@@ -146,6 +146,25 @@ public class SocketDict {
             else
                 //keyToBeFound == node.key
                 return node;
+        }
+
+        return null;
+
+    }
+
+    public String get(String keyToBeFound){
+
+        //finds the Node with the given key
+        Node node = root;
+        while (node != null) {
+
+            if(keyToBeFound.compareToIgnoreCase(node.key) > 0)
+                node = node.right;
+            else if(keyToBeFound.compareToIgnoreCase(node.key) < 0)
+                node = node.left;
+            else
+                //keyToBeFound == node.key
+                return node.value;
         }
 
         return null;
@@ -194,14 +213,14 @@ public class SocketDict {
     }
 
     public void setValueByKey(String key, String new_value){
-        find_Node_with_key(key).value = new_value;
+        find_Node_with_Key(key).value = new_value;
     }
 
     public void remove(String keyOfNodeToBeDeleted) {
 
         //creates all the necessary variables
         Node node = root;
-        node = find_Node_with_key(keyOfNodeToBeDeleted);
+        node = get(keyOfNodeToBeDeleted);
         Node node_before = find_Predecessor_Node_of_Node_with_key(keyOfNodeToBeDeleted);
         int direction; //left = 0; right = 1
 
@@ -438,9 +457,9 @@ public class SocketDict {
     }
 
     public boolean canBeConvertedToDouble(String key_for_value_to_be_checked){
-        if (find_Node_with_key(key_for_value_to_be_checked).key.equals(key_for_value_to_be_checked)) {
+        if (find_Node_with_Key(key_for_value_to_be_checked).key.equals(key_for_value_to_be_checked)) {
             try {
-                Double.parseDouble(find_Node_with_key(key_for_value_to_be_checked).value);
+                Double.parseDouble(find_Node_with_Key(key_for_value_to_be_checked).value);
                 return true;
             } catch (Exception ignored) {
                 return false;
@@ -450,9 +469,9 @@ public class SocketDict {
     }
 
     public boolean canBeConvertedToInteger(String key_for_value_to_be_checked){
-        if (find_Node_with_key(key_for_value_to_be_checked).equals(key_for_value_to_be_checked)) {
+        if (find_Node_with_Key(key_for_value_to_be_checked).key.equals(key_for_value_to_be_checked)) {
             try {
-                Integer.parseInt(find_Node_with_key(key_for_value_to_be_checked).value);
+                Integer.parseInt(find_Node_with_Key(key_for_value_to_be_checked).value);
                 return true;
             } catch (Exception ignored) {
                 return false;
@@ -463,8 +482,8 @@ public class SocketDict {
 
     public Double convertToDouble(String key_for_value_to_be_checked){
         double integer = 0.0;
-        if (find_Node_with_key(key_for_value_to_be_checked).key.equals(key_for_value_to_be_checked)) {
-            integer = Double.parseDouble(find_Node_with_key(key_for_value_to_be_checked).value);
+        if (find_Node_with_Key(key_for_value_to_be_checked).key.equals(key_for_value_to_be_checked)) {
+            integer = Double.parseDouble(find_Node_with_Key(key_for_value_to_be_checked).value);
         }
 
         return integer;
@@ -472,8 +491,8 @@ public class SocketDict {
 
     public Integer convertToInteger(String key_for_value_to_be_checked){
         int integer = 0;
-        if (find_Node_with_key(key_for_value_to_be_checked).key.equals(key_for_value_to_be_checked)) {
-            integer = Integer.parseInt(find_Node_with_key(key_for_value_to_be_checked).value);
+        if (find_Node_with_Key(key_for_value_to_be_checked).key.equals(key_for_value_to_be_checked)) {
+            integer = Integer.parseInt(find_Node_with_Key(key_for_value_to_be_checked).value);
         }
 
         return integer;
