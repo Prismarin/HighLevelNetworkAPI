@@ -3,13 +3,20 @@ package dev.beni.utils;
 import java.util.ArrayList;
 
 public class SocketDict {
+    // A "dictionary" made for being easy and fast to send over sockets. Get the superglue, dictionary and socket
+    // aaaaaaaaand .... kawhooooooooom: "SocketDict" the perfect name for a binarytreestructure, where every Node contains
+    // a key and value for storing all the Strings you want to later send over sockets (actually it should be "what we want", cuz we are most likely be
+    // the only ones using it, but you're free to do so also)
 
+    //creates a root Node
     public Node root;
 
     public SocketDict(String key, String value){
+        //gives the root Node key and value
         root = new Node(key, value);
     }
 
+    //is the Node class (yes, there is nothing else to say about it)
     static class Node{
 
         String value;
@@ -29,6 +36,7 @@ public class SocketDict {
         }
     }
 
+    //adds in a new Node, if and only if the key does not already exist in the tree!!!!
     public void add(String key, String value){
 
         //inserts a new Node into the tree
@@ -213,10 +221,15 @@ public class SocketDict {
     }
 
     public void setValueByKey(String key, String new_value){
+
+        //read the method name not my comment!!
         find_Node_with_Key(key).value = new_value;
+
     }
 
     public void remove(String keyOfNodeToBeDeleted) {
+
+        //removes a Node with the specified key from the tree
 
         //creates all the necessary variables
         Node node = root;
@@ -386,8 +399,11 @@ public class SocketDict {
 
     @Override
     public String toString(){
+
+        //converts the tree to a String in order to send it over sockets efficiently
         String string = traverseToRight();
         return string;
+
     }
 
     private static int findEnd(String string){
@@ -428,6 +444,8 @@ public class SocketDict {
     }
 
     public static SocketDict fromString(String string){
+
+        //converts a String created with the toString() method back to a SocketDict and returns it
         SocketDict converted_from_String;
         int end = findEnd(string);
         int beginning = 1;
@@ -457,6 +475,8 @@ public class SocketDict {
     }
 
     public boolean canBeConvertedToDouble(String key_for_value_to_be_checked){
+
+        //checks if the value of a key can be converted to a Double
         if (find_Node_with_Key(key_for_value_to_be_checked).key.equals(key_for_value_to_be_checked)) {
             try {
                 Double.parseDouble(find_Node_with_Key(key_for_value_to_be_checked).value);
@@ -469,6 +489,8 @@ public class SocketDict {
     }
 
     public boolean canBeConvertedToInteger(String key_for_value_to_be_checked){
+
+        //checks if the value of a key can be converted to an Integer
         if (find_Node_with_Key(key_for_value_to_be_checked).key.equals(key_for_value_to_be_checked)) {
             try {
                 Integer.parseInt(find_Node_with_Key(key_for_value_to_be_checked).value);
@@ -481,6 +503,8 @@ public class SocketDict {
     }
 
     public Double convertToDouble(String key_for_value_to_be_checked){
+
+        //converts the value of a key to Double
         double integer = 0.0;
         if (find_Node_with_Key(key_for_value_to_be_checked).key.equals(key_for_value_to_be_checked)) {
             integer = Double.parseDouble(find_Node_with_Key(key_for_value_to_be_checked).value);
@@ -490,6 +514,8 @@ public class SocketDict {
     }
 
     public Integer convertToInteger(String key_for_value_to_be_checked){
+
+        //converts the value of a key to Integer
         int integer = 0;
         if (find_Node_with_Key(key_for_value_to_be_checked).key.equals(key_for_value_to_be_checked)) {
             integer = Integer.parseInt(find_Node_with_Key(key_for_value_to_be_checked).value);
