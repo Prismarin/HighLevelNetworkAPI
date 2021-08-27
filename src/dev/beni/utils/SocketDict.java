@@ -220,7 +220,7 @@ public class SocketDict {
 
         //creates all the necessary variables
         Node node = root;
-        node = get(keyOfNodeToBeDeleted);
+        node = find_Node_with_Key(keyOfNodeToBeDeleted);
         Node node_before = find_Predecessor_Node_of_Node_with_key(keyOfNodeToBeDeleted);
         int direction; //left = 0; right = 1
 
