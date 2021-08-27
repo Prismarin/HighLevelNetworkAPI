@@ -371,7 +371,7 @@ public class SocketDict {
         return string;
     }
 
-    private int findEnd(String string){
+    private static int findEnd(String string){
         int end = 0;
         for (int i = 0; i < string.length(); i++) {
             char character = string.charAt(i);
@@ -383,7 +383,7 @@ public class SocketDict {
         return end;
     }
 
-    private Node convertKeyAndValueFromString(String string){
+    private static Node convertKeyAndValueFromString(String string){
         int beginnigOfValue = 0;
         String key = null;
         String value = null;
@@ -408,7 +408,7 @@ public class SocketDict {
         return node;
     }
 
-    public SocketDict fromString(String string){
+    public static SocketDict fromString(String string){
         SocketDict converted_from_String;
         int end = findEnd(string);
         int beginning = 1;
