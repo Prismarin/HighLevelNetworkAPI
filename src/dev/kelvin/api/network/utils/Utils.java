@@ -24,8 +24,8 @@ public class Utils {
     }
 
     public static SocketDict buildFromMethodNameAndArgs(String methodName, String[] args) {
-        SocketDict sendDict = new SocketDict();
-        sendDict.add("m", methodName);
+        SocketDict sendDict = new SocketDict("m", methodName);
+        //sendDict.add("m", methodName);
         sendDict.add("s", String.valueOf(args.length));     //s == size
         for (int i = 0; i < args.length; i++) {
             sendDict.add("a" + i, args[i]);     //a == arg

@@ -16,7 +16,7 @@ public class SocketDict {
         root = new Node(key, value);
     }
 
-    //is the Node class (yes, there is nothing else to say about it)
+    //is the Node class (yes, there is nothing else to say about it, or wait ...) every Node has a key and a value
     static class Node{
 
         String value;
@@ -62,6 +62,7 @@ public class SocketDict {
 
     }
 
+    //intern shit, you don't have to mess with this. Simply use add()
     private void insert2(Node node, String key, String value){
 
         //inserts a new Node into the tree
@@ -87,6 +88,7 @@ public class SocketDict {
 
     }
 
+    //prints the entire structure to the console
     public void printout(){
 
         //traverses through the tree and prints the keys in alphabetic order
@@ -101,6 +103,7 @@ public class SocketDict {
 
     }
 
+    //intern shit, you don't have to mess with this. Simply use printout()
     private void traverseInOrder2(Node node){
 
         //traverses through the tree and prints the keys in alphabetic order
@@ -115,6 +118,7 @@ public class SocketDict {
 
     }
 
+    //traverses through the entire structure and returns an ArrayList with all the keys and values
     public ArrayList<Node> traverseInOrderWithPuttingEverythingInAnArraylist(ArrayList<Node> list){
 
         //traverses through the tree and puts the Nodes into an ArrayList sorted in alphabetical order
@@ -128,6 +132,7 @@ public class SocketDict {
 
     }
 
+    //intern shit, you don't have to mess with this. Simply use traverseInOrderWithPuttingEverythingInAnArraylist()
     private ArrayList<Node> traverseInOrderWithPuttingEverythingInAnArraylist2(Node node, ArrayList<Node> list){
 
         //traverses through the tree and puts the Nodes into an ArrayList sorted in alphabetical order
@@ -364,6 +369,7 @@ public class SocketDict {
 
     }
 
+    //intern shit, you don't have to mess with this. Simply don't use it
     private String traverseToRight(){
 
         //traverses through the tree, starting with the root Node and continues with the right Node of the root Node
@@ -381,6 +387,7 @@ public class SocketDict {
 
     }
 
+    //intern shit, you don't have to mess with this. Simply don't use it
     private String traverseInOrder3(Node node, StringBuilder string){
 
         //traverses through the tree
@@ -406,6 +413,7 @@ public class SocketDict {
 
     }
 
+    //intern shit, you don't have to mess with this. Simply don't use it
     private static int findEnd(String string){
         int end = 0;
         for (int i = 0; i < string.length(); i++) {
@@ -418,6 +426,7 @@ public class SocketDict {
         return end;
     }
 
+    //intern shit, you don't have to mess with this. Simply don't use it
     private static Node convertKeyAndValueFromString(String string){
         int beginnigOfValue = 0;
         String key = null;
