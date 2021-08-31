@@ -1,4 +1,6 @@
-package dev.beni.utils;
+package dev.beni.utils.Betas;
+
+import dev.beni.utils.SocketDict;
 
 import java.util.ArrayList;
 

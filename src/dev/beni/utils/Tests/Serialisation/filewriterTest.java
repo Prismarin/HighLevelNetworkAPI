@@ -1,9 +1,9 @@
-package dev.beni.utils;
+package dev.beni.utils.Tests.Serialisation;
 
 import java.io.*;
 import java.util.*;
 
-public class test2 {
+public class filewriterTest {
 
     public static void main(String[] args) throws FileNotFoundException {
         try {
