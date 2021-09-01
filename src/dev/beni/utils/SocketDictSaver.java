@@ -1,33 +1,43 @@
 package dev.beni.utils;
 
 import java.io.*;
-import java.util.Scanner;
 
 public class SocketDictSaver {
 
-    public static void writeNewSocketDictToFile(SocketDict socdict){
+    public static void saveInFile(String fileNameWithoutEnding, SocketDict socketDictToBeSaved){
         try {
-            FileWriter filewriter = new FileWriter("src/dev/beni/utils/test_file.sds", true);
-            filewriter.write("{lol}");
-            filewriter.write("\n");
-            filewriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+            String fileName = fileNameWithoutEnding + ".ssd";
+            FileOutputStream fileOut = new FileOutputStream(fileName);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            StringBuilder SocketDictAsString = new StringBuilder(socketDictToBeSaved.toString());
+            out.writeObject(SocketDictAsString);
+            out.close();
+            fileOut.close();
+        } catch (IOException i) {
+            i.printStackTrace();
         }
     }
 
-    public static void readSocketDictFromFile() {
-        File file = new File("src/dev/beni/utils/test_file.sds");
+    public static SocketDict readFromFile(String fileName){
+        SocketDict readIn = null;
+        StringBuilder readInString = null;
         try {
-            Scanner filereader = new Scanner(file);
-            while (filereader.hasNextLine()) {
-                String data = filereader.nextLine();
-                System.out.println(data);
-            }
-            filereader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+            FileInputStream fileIn = new FileInputStream(fileName);
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            readInString = (StringBuilder) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+            return null;
+        } catch (ClassNotFoundException c) {
+            System.out.println("SocketDict class not found");
+            c.printStackTrace();
+            return null;
         }
+        readIn = SocketDict.fromString(readInString.toString());
+
+        return readIn;
     }
 
 }

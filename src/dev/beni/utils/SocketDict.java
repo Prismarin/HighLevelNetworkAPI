@@ -45,7 +45,7 @@ public class SocketDict {
             if(root.left != null){
                 insert2(root.left, key, value);
             } else {
-                System.out.println("Inserted " + value + " to left of " + root.value);
+                //System.out.println("Inserted " + value + " to left of " + root.value);
                 root.left = new Node(key, value);
             }
 
@@ -54,7 +54,7 @@ public class SocketDict {
             if(root.right != null){
                 insert2(root.right, key, value);
             } else {
-                System.out.println("Inserted " + value + " to right of " + root.value);
+                //System.out.println("Inserted " + value + " to right of " + root.value);
                 root.right = new Node(key, value);
             }
 
@@ -464,7 +464,6 @@ public class SocketDict {
         Node firstnode = convertKeyAndValueFromString(string.substring(beginning, end));
 
         converted_from_String = new SocketDict(firstnode.key, firstnode.value);
-        System.out.println("first Node created");
 
         while(end <= string.length()) {
 
