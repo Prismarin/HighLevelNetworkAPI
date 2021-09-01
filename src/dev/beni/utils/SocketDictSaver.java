@@ -19,8 +19,8 @@ public class SocketDictSaver {
     }
 
     public static SocketDict readFromFile(String fileName){
-        SocketDict readIn = null;
-        StringBuilder readInString = null;
+        SocketDict readIn;
+        StringBuilder readInString;
         try {
             FileInputStream fileIn = new FileInputStream(fileName);
             ObjectInputStream in = new ObjectInputStream(fileIn);
