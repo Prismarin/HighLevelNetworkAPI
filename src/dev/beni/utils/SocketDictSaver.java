@@ -6,7 +6,7 @@ public class SocketDictSaver {
 
     public static void saveInFile(String fileNameWithoutEnding, SocketDict socketDictToBeSaved){
         try {
-            String fileName = fileNameWithoutEnding + ".ssd";
+            String fileName = fileNameWithoutEnding + ".ssd.hln";
             FileOutputStream fileOut = new FileOutputStream(fileName);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             StringBuilder SocketDictAsString = new StringBuilder(socketDictToBeSaved.toString());
