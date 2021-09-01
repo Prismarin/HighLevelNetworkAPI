@@ -1,4 +1,4 @@
-package dev.beni.utils.Tests.BinaryTree;
+package dev.beni.utils.BinaryTreeTests;
 
 public class Tree {
 
