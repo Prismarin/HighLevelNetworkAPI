@@ -9,7 +9,7 @@ public class DemoClient {
 
     public static void main(String[] args) {
         HighLevelNetworkAPI hln = new HighLevelNetworkAPI(new DemoClient());
-        hln.createClient("localhost", 1235);
+        hln.createPingingClient("localhost", 1235, 10000, 10);
         Scanner scan = new Scanner(System.in);
         String in;
         do {

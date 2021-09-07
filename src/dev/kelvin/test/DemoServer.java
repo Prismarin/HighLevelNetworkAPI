@@ -9,7 +9,10 @@ public class DemoServer {
 
     public static void main(String[] args) {
         HighLevelNetworkAPI hln = new HighLevelNetworkAPI(new DemoClient());
-        hln.createServer(1235);
+        hln.addOnConnectionClosed(uuid -> {
+            System.out.println("User with id " + uuid + " disconnected!");
+        });
+        hln.createPingingServer(1235, 1000, 10);
         Scanner scan = new Scanner(System.in);
         String in;
         do {

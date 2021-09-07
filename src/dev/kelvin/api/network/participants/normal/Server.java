@@ -12,6 +12,10 @@ import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.util.*;
 
+/**
+ * @since 1.0
+ * @version 1.0
+ */
 public class Server extends NetworkParticipant {
 
     protected DatagramSocket udpSocket;
@@ -132,7 +136,7 @@ public class Server extends NetworkParticipant {
         }
     }
 
-    private int generateUniqueUserId() {
+    protected int generateUniqueUserId() {
         int ret;
         do {
             ret = rand.nextInt();

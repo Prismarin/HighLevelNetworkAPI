@@ -11,6 +11,10 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.net.*;
 
+/**
+ * @since 1.0
+ * @version 1.0
+ */
 public class Client extends NetworkParticipant {
 
     protected DatagramSocket udpSocket;
