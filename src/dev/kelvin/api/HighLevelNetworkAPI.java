@@ -10,6 +10,8 @@ import dev.kelvin.api.network.events.IOnConnectionSucceeded;
 import dev.kelvin.api.network.exceptions.IllegalMethodNameException;
 import dev.kelvin.api.network.exceptions.MissingArgumentException;
 import dev.kelvin.api.network.exceptions.TooManyArgumentsException;
+import dev.kelvin.api.network.participants.pinging.PingingClient;
+import dev.kelvin.api.network.participants.pinging.PingingServer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,6 +19,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
+/**
+ * @since 1.0
+ * @version SNAPSHOT 1.1 / 1.1
+ */
 public class HighLevelNetworkAPI {
 
     protected Object netObject;
@@ -37,6 +43,8 @@ public class HighLevelNetworkAPI {
      * </h3>
      *
      * @param object the object on which remote-methods will be called
+     *
+     * @since 1.0
      */
     public HighLevelNetworkAPI(@NotNull Object object) {
         this.netObject = object;
@@ -57,6 +65,8 @@ public class HighLevelNetworkAPI {
      *     The method asserts that the netObject != null
      * </h3>
      * @throws AssertionError when netObject == null
+     *
+     * @since 1.0
      */
     private void fetchRemoteMethods() {
         assert (netObject != null);
@@ -104,14 +114,15 @@ public class HighLevelNetworkAPI {
      * </h3>
      *
      * @param port the port on which the server should run
+     *
+     * @since 1.0
      */
     @NetworkParticipantCreator
     public void createServer(int port) {
         if (net == null) {
             net = new Server(netObject, this, port);
             net.start();
-        } else
-            System.err.println("A " + net.getClass().getName() + " is already created on this HighLevelNetwork");
+        } else System.err.println("A " + net.getClass().getName() + " is already created on this HighLevelNetwork");
     }
 
     /**
@@ -131,14 +142,31 @@ public class HighLevelNetworkAPI {
      *
      * @param address is the ip-address to which the client should connect
      * @param port is the port on the computer on the host
+     *
+     * @since 1.0
      */
     @NetworkParticipantCreator
     public void createClient(String address, int port) {
         if (net == null) {
             net = new Client(netObject, this, address, port);
             net.start();
-        } else
-            System.err.println("A " + net.getClass().getName() + " is already created on this HighLevelNetwork");
+        } else System.err.println("A " + net.getClass().getName() + " is already created on this HighLevelNetwork");
+    }
+
+    @NetworkParticipantCreator
+    public void createPingingServer(int port, int pingFrequency, int maxUnRespondedPings) {
+        if (net == null) {
+            net = new PingingServer(netObject, this, port, pingFrequency, maxUnRespondedPings);
+            net.start();
+        } else System.err.println("A " + net.getClass().getName() + " is already created on this HighLevelNetwork");
+    }
+
+    @NetworkParticipantCreator
+    public void createPingingClient(String address, int port, int pingFrequency, int maxUnRespondedPings) {
+        if (net == null) {
+            net = new PingingClient(netObject, this, address, port, maxUnRespondedPings, pingFrequency);
+            net.start();
+        } else System.err.println("A " + net.getClass().getName() + " is already created on this HighLevelNetwork");
     }
 
     /**
@@ -161,6 +189,8 @@ public class HighLevelNetworkAPI {
      * @param args parameters of the method on the called {@link NetworkParticipant}
      *
      * @throws NullPointerException if no {@link NetworkParticipant} has been created
+     *
+     * @since 1.0
      */
     public void rcu(String methodName, String...args) {
         net.rcu(methodName, args);
@@ -179,6 +209,8 @@ public class HighLevelNetworkAPI {
      * @param args parameters of the method on the called {@link NetworkParticipant}
      *
      * @throws NullPointerException if no {@link NetworkParticipant} has been created
+     *
+     * @since 1.0
      */
     public void rcu_id(int userId, String methodName, String... args) {
         net.rcu_id(userId, methodName, args);
@@ -205,6 +237,8 @@ public class HighLevelNetworkAPI {
      * @param args parameters of the method on the called {@link NetworkParticipant}
      *
      * @throws NullPointerException if no {@link NetworkParticipant} has been created
+     *
+     * @since 1.0
      */
     public void rct(String methodName, String...args) {
         net.rct(methodName, args);
@@ -223,6 +257,8 @@ public class HighLevelNetworkAPI {
      * @param args parameters for called methods on other side
      *
      * @throws NullPointerException if no {@link NetworkParticipant} has been created
+     *
+     * @since 1.0
      */
     public void rct_id(int userId, String methodName, String... args) {
         net.rct_id(userId, methodName, args);
@@ -253,6 +289,8 @@ public class HighLevelNetworkAPI {
      * </h3>
      *
      * @param onConnectionSucceeded method reference
+     *
+     * @since 1.0
      */
     public void addOnConnectionSucceeded(IOnConnectionSucceeded onConnectionSucceeded) {
         onConnectionSucceededList.add(onConnectionSucceeded);
@@ -279,6 +317,8 @@ public class HighLevelNetworkAPI {
      * </h3>
      *
      * @param userId the userId described earlier.
+     *
+     * @since 1.0
      */
     public void triggerConnectionSucceeded(int userId) {
         for (IOnConnectionSucceeded e : onConnectionSucceededList)
@@ -302,6 +342,8 @@ public class HighLevelNetworkAPI {
      * </h3>
      *
      * @param onConnectionFailed method reference
+     *
+     * @since 1.0
      */
     public void addOnConnectionFailed(IOnConnectionFailed onConnectionFailed) {
         onConnectionFailedList.add(onConnectionFailed);
@@ -323,7 +365,7 @@ public class HighLevelNetworkAPI {
      *     </ul>
      * </h3>
      *
-     * called when the client tried to connect to a host which refused the client
+     * @since 1.0
      */
     public void triggerConnectionFailed() {
         for (IOnConnectionFailed e : onConnectionFailedList)
@@ -348,6 +390,8 @@ public class HighLevelNetworkAPI {
      * </h3>
      *
      * @param onConnectionClosed method reference
+     *
+     * @since 1.0
      */
     public void addOnConnectionClosed(IOnConnectionClosed onConnectionClosed) {
         onConnectionClosedList.add(onConnectionClosed);
@@ -362,18 +406,19 @@ public class HighLevelNetworkAPI {
      *     <ul>
      *         <li>
      *             {@link Client}:
-     *             When the {@link Server} closed the connection without signaling to the {@link Client} that the
-     *             connection will be closed; userId = 0
+     *             When the {@link Server} closed the connection to the {@link Client}; userId = 0
      *         </li>
      *         <li>
      *             {@link Server}:
-     *             When a {@link Client} disconnects or loses the connection to the {@link Server}; userId = the
+     *             When a {@link Client} disconnects or looses the connection to the {@link Server}; userId = the
      *             userId of the disconnected {@link Client}
      *         </li>
      *     </ul>
      * </h3>
      *
      * @param userId the userId described earlier
+     *
+     * @since 1.0
      */
     public void triggerConnectionClosed(int userId) {
         for (IOnConnectionClosed e : onConnectionClosedList)
@@ -397,6 +442,8 @@ public class HighLevelNetworkAPI {
      * @param args the arguments for the method
      * @throws InvocationTargetException when the method can't be invoked
      * @throws IllegalAccessException when the method that is called can't be accessed because it is not public
+     *
+     * @since 1.0
      */
     public void call(String methodName, String... args) throws InvocationTargetException, IllegalAccessException {
         if (netObject == null)
@@ -448,6 +495,8 @@ public class HighLevelNetworkAPI {
      *
      * @param methodName is the name of the method which is searched
      * @return the method-object || null if !remoteMethods.contains(method -> methodName)
+     *
+     * @since 1.0
      */
     private @Nullable Method getMethodByName(String methodName) {
         for (Method method : remoteMethods) {
@@ -473,6 +522,8 @@ public class HighLevelNetworkAPI {
      * </h3>
      *
      * @throws NullPointerException if the method is called when {@link HighLevelNetworkAPI} is not used as {@link Client}
+     *
+     * @since 1.0
      */
     public void disconnect() {
         if (net instanceof Client) {

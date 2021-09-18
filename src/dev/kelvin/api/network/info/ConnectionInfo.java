@@ -11,9 +11,13 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 
+/**
+ * @since 1.0
+ * @version 1.0
+ */
 public class ConnectionInfo extends Thread {
 
-    private final HighLevelNetworkAPI hln;
+    protected final HighLevelNetworkAPI hln;
 
     public final InetAddress address;
     public final int port;
@@ -49,14 +53,13 @@ public class ConnectionInfo extends Thread {
                 Utils.workWithReceivedData(hln, dict);
             } catch (EOFException ignored) {
                 System.err.println("Client just disconnected without telling the server!");
+                hln.triggerConnectionClosed(userId);
                 break;
             } catch (IOException e) {
-                e.printStackTrace();
                 try {
                     tcpSocket.close();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+                } catch (IOException ignored) {}
+                hln.triggerConnectionClosed(userId);
                 break;
             }
         }
