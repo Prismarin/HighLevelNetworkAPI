@@ -414,35 +414,4 @@ public class TreeDictBeta<K, V> {
         return node;
     }
 
-    public static SocketDict fromString(String string){
-
-        //converts a String created with the toString() method back to a SocketDict and returns it
-        SocketDict converted_from_String;
-        int end = findEnd(string);
-        int beginning = 1;
-        TreeDictBeta.Node nextnode = null;
-
-
-        TreeDictBeta.Node firstnode = convertKeyAndValueFromString(string.substring(beginning, end));
-
-        converted_from_String = new SocketDict(firstnode.key, firstnode.value);
-
-        while(end <= string.length()) {
-
-            beginning = end + 1;
-            if(beginning < string.length()){
-                string = string.substring(beginning);
-            } else {
-                break;
-            }
-            end = findEnd(string);
-            nextnode = convertKeyAndValueFromString(string);
-            converted_from_String.add(nextnode.key, nextnode.value);
-
-        }
-
-        return converted_from_String;
-    }
-
-
 }
