@@ -1,6 +1,6 @@
 package dev.beni.utils.Betas;
 
-import dev.beni.utils.SocketDict;
+//import dev.beni.utils.SocketDict;
 
 import java.util.ArrayList;
 
@@ -89,9 +89,9 @@ public class SocketDictBeta  {
         }
     }
 
-    public static SocketDict fromString(String string) {
+    public static SocketDictBeta fromString(String string) {
         //converts the created String (made in toString()) back to a new SocketDict object
-        SocketDict converted_from_String = new SocketDict("", "");
+        SocketDictBeta converted_from_String = new SocketDictBeta();
 
         //finds where "keys-part" ends
         int keys_end = 0;

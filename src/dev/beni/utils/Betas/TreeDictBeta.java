@@ -1,110 +1,87 @@
-package dev.beni.utils;
+package dev.beni.utils.Betas;
+
+import dev.beni.utils.SocketDict;
 
 import java.util.ArrayList;
 
-public class SocketDict {
-    // A "dictionary" made for being easy and fast to send over sockets. Get the superglue, dictionary and socket
-    // aaaaaaaaand .... kawhooooooooom: "SocketDict" the perfect name for a binarytreestructure, where every Node contains
-    // a key and value for storing all the Strings you want to later send over sockets (actually it should be "what we want", cuz we are most likely be
-    // the only ones using it, but you're free to do so also)
+public class TreeDictBeta<K, V> {
 
-    //creates a root Node
-    public Node root;
+    static class Node<K, V>{
 
-    public SocketDict(String key, String value){
-        //gives the root Node key and value
-        root = new Node(key, value);
-    }
-
-    //is the Node class (yes, there is nothing else to say about it, or wait ...) every Node has a key and a value
-    static class Node{
-
-        String value;
-        String key;
+        V value;
+        K key;
         Node left, right;
 
-        Node(String key, String value){
+        Node(K key, V value){
             this.key = key;
             this.value = value;
             left = null;
             right = null;
         }
-
-        //The name says, what it does
-        public void setValue(String newValue){
-            value = newValue;
-        }
     }
 
-    //adds in a new Node, if and only if the key does not already exist in the tree!!!!
-    public void add(String key, String value){
+    public Node<K, V> root;
+
+    // Constructor (creates root Node)
+    public TreeDictBeta(K key, V value){
+        root = new Node(key, value);
+    }
+
+    // Adds a new Node to the tree (adding two Nodes with the same key DOES NOT WORK!)
+    public void add(K key, V value) {
+        String keyAsString = key.toString();
 
         //inserts a new Node into the tree
-        if(key.compareToIgnoreCase(root.key) < 0){
+        if(keyAsString.compareToIgnoreCase(root.key.toString()) < 0){
 
             if(root.left != null){
-                insert2(root.left, key, value);
+                addWithStartingNode(root.left, key, value);
             } else {
                 //System.out.println("Inserted " + value + " to left of " + root.value);
-                root.left = new Node(key, value);
+                root.left = new TreeDictBeta.Node(key, value);
             }
 
-        } else if (key.compareToIgnoreCase(root.key) > 0){
+        } else if (keyAsString.compareToIgnoreCase(root.key.toString()) > 0){
 
             if(root.right != null){
-                insert2(root.right, key, value);
+                addWithStartingNode(root.right, key, value);
             } else {
                 //System.out.println("Inserted " + value + " to right of " + root.value);
-                root.right = new Node(key, value);
+                root.right = new TreeDictBeta.Node(key, value);
             }
 
         }
 
     }
 
-    //intern shit, you don't have to mess with this. Simply use add()
-    private void insert2(Node node, String key, String value){
+    // Adds a new Node to the leftover tree with the startNode as its root
+    public void addWithStartingNode(TreeDictBeta.Node startNode, K key, V value){
+        String keyAsString = key.toString();
 
-        //inserts a new Node into the tree
-        if(key.compareToIgnoreCase(node.key) < 0){
+        if(keyAsString.compareToIgnoreCase(startNode.key.toString()) < 0){
 
-            if(node.left != null){
-                insert2(node.left, key, value);
+            if(startNode.left != null){
+                addWithStartingNode(startNode.left, key, value);
             } else {
-                System.out.println("Inserted " + value + " to left of " + node.value);
-                node.left = new Node(key, value);
+                System.out.println("Inserted " + value + " to left of " + startNode.value);
+                startNode.left = new TreeDictBeta.Node(key, value);
             }
 
-        } else if (key.compareToIgnoreCase(node.key) > 0){
+        } else if (keyAsString.compareToIgnoreCase(startNode.key.toString()) > 0){
 
-            if(node.right != null){
-                insert2(node.right, key, value);
+            if(startNode.right != null){
+                addWithStartingNode(startNode.right, key, value);
             } else {
-                System.out.println("Inserted " + value + " to right of " + node.value);
-                node.right = new Node(key, value);
+                System.out.println("Inserted " + value + " to right of " + startNode.value);
+                startNode.right = new TreeDictBeta.Node(key, value);
             }
 
         }
 
     }
 
-    //prints the entire structure to the console
-    public void printout(){
-
-        //traverses through the tree and prints the keys in alphabetic order
-        if(root != null){
-            traverseInOrder2(root.left);
-            System.out.print("(key:");
-            System.out.print(root.key);
-            System.out.print(", value:");
-            System.out.print(root.value + ") ");
-            traverseInOrder2(root.right);
-        }
-
-    }
-
-    //intern shit, you don't have to mess with this. Simply use printout()
-    private void traverseInOrder2(Node node){
+    // intern shit, you don't have to mess with this. It's only for debugging purposes
+    public void traverseInOrder2(TreeDictBeta.Node node){
 
         //traverses through the tree and prints the keys in alphabetic order
         if(node != null){
@@ -118,43 +95,44 @@ public class SocketDict {
 
     }
 
-    //traverses through the entire structure and returns an ArrayList with all the keys and values
-    public ArrayList<Node> traverseInOrderWithPuttingEverythingInAnArraylist(ArrayList<Node> list){
+    // traverses through the entire tree structure and returns an ArrayList with all the keys and values
+    public ArrayList<TreeDictBeta.Node<K, V>> traverseInOrder(ArrayList<TreeDictBeta.Node<K, V>> list){
 
         //traverses through the tree and puts the Nodes into an ArrayList sorted in alphabetical order
         if(root != null){
-            traverseInOrderWithPuttingEverythingInAnArraylist2(root.left, list);
+            traverseInOrderWithStartingNode(root.left, list);
             list.add(root);
-            traverseInOrderWithPuttingEverythingInAnArraylist2(root.right, list);
+            traverseInOrderWithStartingNode(root.right, list);
         }
 
         return list;
 
     }
 
-    //intern shit, you don't have to mess with this. Simply use traverseInOrderWithPuttingEverythingInAnArraylist()
-    private ArrayList<Node> traverseInOrderWithPuttingEverythingInAnArraylist2(Node node, ArrayList<Node> list){
+    // traverses through the leftover tree structure beginning at the specified startNode and returns an ArrayList with all the keys and values
+    public ArrayList<TreeDictBeta.Node<K, V>> traverseInOrderWithStartingNode(TreeDictBeta.Node startingNode, ArrayList<TreeDictBeta.Node<K, V>> list){
 
         //traverses through the tree and puts the Nodes into an ArrayList sorted in alphabetical order
-        if(node != null){
-            traverseInOrderWithPuttingEverythingInAnArraylist2(node.left, list);
-            list.add(node);
-            traverseInOrderWithPuttingEverythingInAnArraylist2(node.right, list);
+        if(startingNode != null){
+            traverseInOrderWithStartingNode(startingNode.left, list);
+            list.add(startingNode);
+            traverseInOrderWithStartingNode(startingNode.right, list);
         }
 
         return list;
 
     }
 
-    public Node find_Node_with_Key(String keyToBeFound){
+    // returns the Node with the given keyToBeFound (there is only one, cuz two Nodes with the same key can't exist)
+    public TreeDictBeta.Node findNodeWithKey(K keyToBeFound){
 
-        //finds the Node with the given key
-        Node node = root;
+        TreeDictBeta.Node node = root;
+        String keyToBeFoundAsString = keyToBeFound.toString();
         while (node != null) {
 
-            if(keyToBeFound.compareToIgnoreCase(node.key) > 0)
+            if(keyToBeFoundAsString.compareToIgnoreCase(node.key.toString()) > 0)
                 node = node.right;
-            else if(keyToBeFound.compareToIgnoreCase(node.key) < 0)
+            else if(keyToBeFoundAsString.compareToIgnoreCase(node.key.toString()) < 0)
                 node = node.left;
             else
                 //keyToBeFound == node.key
@@ -165,36 +143,18 @@ public class SocketDict {
 
     }
 
-    public String get(String keyToBeFound){
+    public TreeDictBeta.Node find_Predecessor_Node_of_Node_with_key(K keyToBeFound){
 
-        //finds the Node with the given key
-        Node node = root;
+        TreeDictBeta.Node node = root;
+        TreeDictBeta.Node node_before = null;
+        String keyToBeFoundAsString = keyToBeFound.toString();
+
         while (node != null) {
 
-            if(keyToBeFound.compareToIgnoreCase(node.key) > 0)
-                node = node.right;
-            else if(keyToBeFound.compareToIgnoreCase(node.key) < 0)
-                node = node.left;
-            else
-                //keyToBeFound == node.key
-                return node.value;
-        }
-
-        return null;
-
-    }
-
-    public Node find_Predecessor_Node_of_Node_with_key(String keyToBeFound){
-
-        //finds the predecessor of a Node with specific key
-        Node node = root;
-        Node node_before = null;
-        while (node != null) {
-
-            if(keyToBeFound.compareToIgnoreCase(node.key) > 0) {
+            if(keyToBeFoundAsString.compareToIgnoreCase(node.key.toString()) > 0) {
                 node_before = node;
                 node = node.right;
-            } else if(keyToBeFound.compareToIgnoreCase(node.key) < 0) {
+            } else if(keyToBeFoundAsString.compareToIgnoreCase(node.key.toString()) < 0) {
                 node_before = node;
                 node = node.left;
             } else
@@ -206,44 +166,44 @@ public class SocketDict {
 
     }
 
-    public Node find_Node_containing_Value(String valueToBeFound){
+    // updates the value of a Node with the specified key as its key
+    public void setValueByKey(K key, V new_value){
 
-        //finds a Node, that contains a specific value
-        Node node = root;
+        findNodeWithKey(key).value = new_value;
+
+    }
+
+    // returns the value of the Node with the specified key
+    public V get(K keyToBeFound){
+
+        TreeDictBeta.Node node = root;
+        String keyToBeFoundAsString = keyToBeFound.toString();
         while (node != null) {
 
-            if(valueToBeFound.compareToIgnoreCase(node.value) > 0)
+            if(keyToBeFoundAsString.compareToIgnoreCase(node.key.toString()) > 0)
                 node = node.right;
-            else if(valueToBeFound.compareToIgnoreCase(node.value) < 0)
+            else if(keyToBeFoundAsString.compareToIgnoreCase(node.key.toString()) < 0)
                 node = node.left;
             else
-                //valueToBeFound == node.value
-                return node;
-
+                //keyToBeFound == node.key
+                return (V) node.value;
         }
+
         return null;
 
     }
 
-    public void setValueByKey(String key, String new_value){
+    // removes a Node with the specified key from the tree
+    public void remove(K keyOfNodeToBeDeleted) {
 
-        //read the method name not my comment!!
-        find_Node_with_Key(key).value = new_value;
-
-    }
-
-    public void remove(String keyOfNodeToBeDeleted) {
-
-        //removes a Node with the specified key from the tree
-
-        //creates all the necessary variables
-        Node node = root;
-        node = find_Node_with_Key(keyOfNodeToBeDeleted);
-        Node node_before = find_Predecessor_Node_of_Node_with_key(keyOfNodeToBeDeleted);
-        int direction; //left = 0; right = 1
+        // creates all the necessary variables
+        TreeDictBeta.Node node = root;
+        node = findNodeWithKey(keyOfNodeToBeDeleted);
+        TreeDictBeta.Node node_before = find_Predecessor_Node_of_Node_with_key(keyOfNodeToBeDeleted);
+        int direction; // left = 0; right = 1
 
 
-        //checks which successor node is the one to be deleted
+        // checks which is the successor node of the one to be deleted
         if(node_before.left != null) {
 
             if (keyOfNodeToBeDeleted.equals(node_before.left.key)) {
@@ -258,7 +218,9 @@ public class SocketDict {
             direction = 2;
         }
 
-        //Node to be deleted is a leaf node
+        // if else structure checks what type of Node the Node to be deleted is (e.g. leaf)
+
+        // Node to be deleted is a leaf node
         if(node.left == null && node.right == null && direction != 2){
 
             //checks which direction the Node to be deleted to its predecessor Node is
@@ -279,8 +241,8 @@ public class SocketDict {
             if(direction == 0){
 
                 //Puts all the Nodes on the right of the Node to be deleted into an ArrayList
-                ArrayList<Node> nodesOnTheRight = new ArrayList<>();
-                nodesOnTheRight = traverseInOrderWithPuttingEverythingInAnArraylist2(node.right, nodesOnTheRight);
+                ArrayList<TreeDictBeta.Node<K, V>> nodesOnTheRight = new ArrayList<>();
+                nodesOnTheRight = traverseInOrderWithStartingNode(node.right, nodesOnTheRight);
 
                 //Moves the Node to the left of the Node to be deleted one level up and deletes the Node at the same time
                 node_before.left = node.left;
@@ -293,8 +255,8 @@ public class SocketDict {
             } else {
 
                 //Puts all the Nodes on the left of the Node to be deleted into an ArrayList
-                ArrayList<Node> nodesOnTheLeft = new ArrayList<>();
-                nodesOnTheLeft = traverseInOrderWithPuttingEverythingInAnArraylist2(node.left, nodesOnTheLeft);
+                ArrayList<TreeDictBeta.Node<K, V>> nodesOnTheLeft = new ArrayList<>();
+                nodesOnTheLeft = traverseInOrderWithStartingNode(node.left, nodesOnTheLeft);
 
                 //Moves the Node to the right of the Node to be deleted one level up and deletes the Node at the same time
                 node_before.right = node.right;
@@ -315,8 +277,8 @@ public class SocketDict {
             if(direction == 0){
 
                 //Puts all the Nodes on the right of the Node to be deleted into an ArrayList
-                ArrayList<Node> nodesOnTheRight = new ArrayList<>();
-                nodesOnTheRight = traverseInOrderWithPuttingEverythingInAnArraylist2(node.right, nodesOnTheRight);
+                ArrayList<TreeDictBeta.Node<K, V>> nodesOnTheRight = new ArrayList<>();
+                nodesOnTheRight = traverseInOrderWithStartingNode(node.right, nodesOnTheRight);
 
                 //Removes the Node by setting its predecessors left value to null
                 node_before.left = null;
@@ -349,8 +311,8 @@ public class SocketDict {
             } else {
 
                 //Puts all the Nodes on the left of the Node to be deleted into an ArrayList
-                ArrayList<Node> nodesOnTheLeft = new ArrayList<>();
-                nodesOnTheLeft = traverseInOrderWithPuttingEverythingInAnArraylist2(node.left, nodesOnTheLeft);
+                ArrayList<TreeDictBeta.Node<K, V>> nodesOnTheLeft = new ArrayList<>();
+                nodesOnTheLeft = traverseInOrderWithStartingNode(node.left, nodesOnTheLeft);
 
                 //Removes the Node by setting its predecessors left value to null
                 node_before.right = null;
@@ -369,7 +331,7 @@ public class SocketDict {
 
     }
 
-    //intern shit, you don't have to mess with this. Simply don't use it
+    // intern shit, you don't have to mess with this. Simply don't use it
     private String traverseToRight(){
 
         //traverses through the tree, starting with the root Node and continues with the right Node of the root Node
@@ -387,8 +349,8 @@ public class SocketDict {
 
     }
 
-    //intern shit, you don't have to mess with this. Simply don't use it
-    private String traverseInOrder3(Node node, StringBuilder string){
+    // intern shit, you don't have to mess with this. Simply don't use it
+    private String traverseInOrder3(TreeDictBeta.Node node, StringBuilder string){
 
         //traverses through the tree
         if(node != null){
@@ -404,16 +366,16 @@ public class SocketDict {
 
     }
 
+    // converts the tree to a String in order to send it over sockets efficiently
     @Override
     public String toString(){
 
-        //converts the tree to a String in order to send it over sockets efficiently
         String string = traverseToRight();
         return string;
 
     }
 
-    //intern shit, you don't have to mess with this. Simply don't use it
+    // intern shit, you don't have to mess with this. Simply don't use it
     private static int findEnd(String string){
         int end = 0;
         for (int i = 0; i < string.length(); i++) {
@@ -427,7 +389,7 @@ public class SocketDict {
     }
 
     //intern shit, you don't have to mess with this. Simply don't use it
-    private static Node convertKeyAndValueFromString(String string){
+    private static TreeDictBeta.Node convertKeyAndValueFromString(String string){
         int beginnigOfValue = 0;
         String key = null;
         String value = null;
@@ -448,7 +410,7 @@ public class SocketDict {
                 break;
             }
         }
-        Node node = new Node(key, value);
+        TreeDictBeta.Node node = new TreeDictBeta.Node(key, value);
         return node;
     }
 
@@ -458,10 +420,10 @@ public class SocketDict {
         SocketDict converted_from_String;
         int end = findEnd(string);
         int beginning = 1;
-        Node nextnode = null;
+        TreeDictBeta.Node nextnode = null;
 
 
-        Node firstnode = convertKeyAndValueFromString(string.substring(beginning, end));
+        TreeDictBeta.Node firstnode = convertKeyAndValueFromString(string.substring(beginning, end));
 
         converted_from_String = new SocketDict(firstnode.key, firstnode.value);
 
@@ -482,53 +444,5 @@ public class SocketDict {
         return converted_from_String;
     }
 
-    public boolean canBeConvertedToDouble(String key_for_value_to_be_checked){
 
-        //checks if the value of a key can be converted to a Double
-        if (find_Node_with_Key(key_for_value_to_be_checked).key.equals(key_for_value_to_be_checked)) {
-            try {
-                Double.parseDouble(find_Node_with_Key(key_for_value_to_be_checked).value);
-                return true;
-            } catch (Exception ignored) {
-                return false;
-            }
-        }
-        return false;
-    }
-
-    public boolean canBeConvertedToInteger(String key_for_value_to_be_checked){
-
-        //checks if the value of a key can be converted to an Integer
-        if (find_Node_with_Key(key_for_value_to_be_checked).key.equals(key_for_value_to_be_checked)) {
-            try {
-                Integer.parseInt(find_Node_with_Key(key_for_value_to_be_checked).value);
-                return true;
-            } catch (Exception ignored) {
-                return false;
-            }
-        }
-        return false;
-    }
-
-    public Double convertToDouble(String key_for_value_to_be_checked){
-
-        //converts the value of a key to Double
-        double integer = 0.0;
-        if (find_Node_with_Key(key_for_value_to_be_checked).key.equals(key_for_value_to_be_checked)) {
-            integer = Double.parseDouble(find_Node_with_Key(key_for_value_to_be_checked).value);
-        }
-
-        return integer;
-    }
-
-    public Integer convertToInteger(String key_for_value_to_be_checked){
-
-        //converts the value of a key to Integer
-        int integer = 0;
-        if (find_Node_with_Key(key_for_value_to_be_checked).key.equals(key_for_value_to_be_checked)) {
-            integer = Integer.parseInt(find_Node_with_Key(key_for_value_to_be_checked).value);
-        }
-
-        return integer;
-    }
 }
