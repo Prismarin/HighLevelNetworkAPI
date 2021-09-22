@@ -15,8 +15,8 @@ public class PingingServer extends Server {
 
     protected int pingFrequency, maxUnRespondedPings;
 
-    public PingingServer(Object object, HighLevelNetworkAPI hln, int port, int pingFrequency, int maxUnRespondedPings) {
-        super(object, hln, port);
+    public PingingServer(Object object, HighLevelNetworkAPI hln, int port, int maxUsers, int pingFrequency, int maxUnRespondedPings) {
+        super(object, hln, port, maxUsers);
         this.pingFrequency = pingFrequency;
         this.maxUnRespondedPings = maxUnRespondedPings;
     }
@@ -35,7 +35,11 @@ public class PingingServer extends Server {
             }
 
             if (use) {
-                clients.put(userId, newClient);
+                boolean hasSpace = add(userId, newClient);
+                if (!hasSpace) {
+                    System.err.println("The Server has no space left!");
+                    continue;
+                }
                 newClient.start();
                 hln.triggerConnectionSucceeded(userId);
             }

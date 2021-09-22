@@ -14,24 +14,33 @@ import java.util.*;
 
 /**
  * @since 1.0
- * @version 1.0
+ * @version 1.1
+ *
+ * <h2>
+ *     Can support up to 100 clients flawlessly
+ * </h2>
  */
 public class Server extends NetworkParticipant {
 
     protected DatagramSocket udpSocket;
     protected ServerSocket tcpSocket;
 
-    protected HashMap<Integer, ConnectionInfo> clients;
+    protected ConnectionInfo[] tcpClients;
+    protected int[][] userIdsToTcpClientsPosition;
 
     protected int port;
+    protected int maxUsers;
 
     protected Random rand;
 
-    public Server(Object object, HighLevelNetworkAPI hln, int port) {
+    public Server(Object object, HighLevelNetworkAPI hln, int port, int maxUsers) {
         super(object, hln);
         this.port = port;
 
-        clients = new HashMap<>();
+        this.maxUsers = maxUsers;
+        tcpClients = new ConnectionInfo[maxUsers];
+        userIdsToTcpClientsPosition = new int[maxUsers][2];
+
         rand = new Random();
 
         try {
@@ -46,14 +55,15 @@ public class Server extends NetworkParticipant {
     public void rcu_id(int uuid, String methodName, String... args) {
         if (uuid == 0) {
             //send all
-            for (Map.Entry<Integer, ConnectionInfo> info : clients.entrySet()) {
-                rcu_id(info.getKey(), methodName, args);
+            for (int i = 0; i < maxUsers; i++) {
+                rcu_id(userIdsToTcpClientsPosition[i][0], methodName, args);
             }
         } else {
             //send one
-            if (clients.containsKey(uuid)) {
+            if (doesUuidExist(uuid)) {
                 SocketDict sendDict = Utils.buildFromMethodNameAndArgs(methodName, args);
-                ConnectionInfo info = clients.get(uuid);
+                //should not throw exception
+                ConnectionInfo info = getInfo(uuid);
                 try {
                     byte[] data = (sendDict + endString).getBytes();
                     DatagramPacket packet = new DatagramPacket(data, data.length, info.address, info.port);
@@ -75,17 +85,19 @@ public class Server extends NetworkParticipant {
     @Override
     public void rct_id(int uuid, String methodName, String... args) {
         if (uuid == 0) {
-            for (Map.Entry<Integer, ConnectionInfo> info : clients.entrySet()) {
-                rct_id(info.getKey(), methodName, args);
+            for (int i = 0; i < maxUsers; i++) {
+                int userId = userIdsToTcpClientsPosition[i][0];
+                if (userId != 0)
+                    rct_id(userId, methodName, args);
             }
         } else {
-            if (clients.containsKey(uuid)) {
+            if (doesUuidExist(uuid)) {
                 SocketDict sendDict = Utils.buildFromMethodNameAndArgs(methodName, args);
-                ConnectionInfo info = clients.get(uuid);
+                ConnectionInfo info = getInfo(uuid);
                 try {
                     boolean connected = info.send(sendDict.toString());
                     if (!connected)
-                        clients.remove(uuid);
+                        remove(uuid);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -129,7 +141,11 @@ public class Server extends NetworkParticipant {
             }
 
             if (use) {
-                clients.put(userId, newClient);
+                boolean hasSpace = add(userId, newClient);
+                if (!hasSpace) {
+                    System.err.println("The Server has no space left!");
+                    continue;
+                }
                 newClient.start();
                 hln.triggerConnectionSucceeded(userId);
             }
@@ -140,8 +156,75 @@ public class Server extends NetworkParticipant {
         int ret;
         do {
             ret = rand.nextInt();
-        } while (clients.containsKey(ret) || ret <= 1);
+        } while (doesUuidExist(ret));
         return ret;
+    }
+
+    public boolean doesUuidExist(int uuid) {
+        if (uuid == 0 || uuid == 1)
+            return true;
+        for (int i = 0; i < maxUsers; i++) {
+            if (userIdsToTcpClientsPosition[i][0] == uuid)
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * does not check whether uuid exists
+     * @param uuid the uuid the {@link ConnectionInfo} is requested
+     * @return the {@link ConnectionInfo} from the uuid
+     * @throws ArrayIndexOutOfBoundsException when the uuid does not exist
+     */
+    public ConnectionInfo getInfo(int uuid) {
+        int info = maxUsers;
+        for (int i = 0; i < maxUsers; i++) {
+            if (userIdsToTcpClientsPosition[i][0] == uuid)
+                info = userIdsToTcpClientsPosition[i][1];
+        }
+        return tcpClients[info];
+    }
+
+    /**
+     *
+     * @param uuid the uuid to add
+     * @param info the {@link ConnectionInfo} to add
+     * @return if the server has space to add this client or not, the {@link HighLevelNetworkAPI}
+     */
+    public boolean add(int uuid, ConnectionInfo info) {
+        int infoSpot = -1;
+        for (int i = 0; i < maxUsers; i++) {
+            if (tcpClients[i] == null) {
+                tcpClients[i] = info;
+                infoSpot = i;
+                break;
+            }
+        }
+        if (infoSpot == -1)
+            return false;
+        for (int i = 0; i < maxUsers; i++) {
+            if (userIdsToTcpClientsPosition[i][0] == 0) {
+                userIdsToTcpClientsPosition[i][0] = uuid;
+                userIdsToTcpClientsPosition[i][1] = infoSpot;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * does nothing when the uuid does not exist
+     * @param uuid the uuid that should be removed
+     */
+    public void remove(int uuid) {
+        for (int i = 0; i < maxUsers; i++) {
+            if (userIdsToTcpClientsPosition[i][0] == uuid) {
+                int info = userIdsToTcpClientsPosition[i][1];
+                userIdsToTcpClientsPosition[i][0] = 0;
+                userIdsToTcpClientsPosition[i][1] = 0;
+                tcpClients[info] = null;
+            }
+        }
     }
 
 }

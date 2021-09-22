@@ -6,7 +6,7 @@ public class SocketDict {
     // A "dictionary" made for being easy and fast to send over sockets. Get the superglue, dictionary and socket
     // aaaaaaaaand .... kawhooooooooom: "SocketDict" the perfect name for a binarytreestructure, where every Node contains
     // a key and value for storing all the Strings you want to later send over sockets (actually it should be "what we want", cuz we are most likely be
-    // the only ones using it, but you're free to do so also)
+    // the only ones using it, but you're free to do so as well)
 
     //creates a root Node
     public Node root;

@@ -9,13 +9,15 @@ public class DemoClient {
 
     public static void main(String[] args) {
         HighLevelNetworkAPI hln = new HighLevelNetworkAPI(new DemoClient());
-        hln.createPingingClient("localhost", 1235, 10000, 10);
+        hln.createClient("localhost", 1235);
         Scanner scan = new Scanner(System.in);
         String in;
         do {
             in = scan.nextLine();
             hln.rct("say", in);
         } while (!in.equals("exit"));
+        hln.disconnect();
+        //System.exit(12);
     }
 
     @Remote(1)

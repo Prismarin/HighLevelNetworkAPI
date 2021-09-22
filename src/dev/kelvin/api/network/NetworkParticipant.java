@@ -42,6 +42,10 @@ public abstract class NetworkParticipant {
 
     public void stop() {
         running = false;
+        try {
+            udpListener.join();
+            tcpListener.join();
+        } catch (InterruptedException ignored) {}
     }
 
 }

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 /**
  * @since 1.0
- * @version SNAPSHOT 1.1 / 1.1
+ * @version 1.1
  */
 public class HighLevelNetworkAPI {
 
@@ -118,9 +118,9 @@ public class HighLevelNetworkAPI {
      * @since 1.0
      */
     @NetworkParticipantCreator
-    public void createServer(int port) {
+    public void createServer(int port, int maxUsers) {
         if (net == null) {
-            net = new Server(netObject, this, port);
+            net = new Server(netObject, this, port, maxUsers);
             net.start();
         } else System.err.println("A " + net.getClass().getName() + " is already created on this HighLevelNetwork");
     }
@@ -154,9 +154,9 @@ public class HighLevelNetworkAPI {
     }
 
     @NetworkParticipantCreator
-    public void createPingingServer(int port, int pingFrequency, int maxUnRespondedPings) {
+    public void createPingingServer(int port, int maxUsers, int pingFrequency, int maxUnRespondedPings) {
         if (net == null) {
-            net = new PingingServer(netObject, this, port, pingFrequency, maxUnRespondedPings);
+            net = new PingingServer(netObject, this, port, maxUsers, pingFrequency, maxUnRespondedPings);
             net.start();
         } else System.err.println("A " + net.getClass().getName() + " is already created on this HighLevelNetwork");
     }

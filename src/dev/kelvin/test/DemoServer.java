@@ -8,17 +8,18 @@ import java.util.Scanner;
 public class DemoServer {
 
     public static void main(String[] args) {
-        HighLevelNetworkAPI hln = new HighLevelNetworkAPI(new DemoClient());
+        HighLevelNetworkAPI hln = new HighLevelNetworkAPI(new DemoServer());
         hln.addOnConnectionClosed(uuid -> {
             System.out.println("User with id " + uuid + " disconnected!");
         });
-        hln.createPingingServer(1235, 1000, 10);
+        hln.createServer(1235, 100);
         Scanner scan = new Scanner(System.in);
         String in;
         do {
             in = scan.nextLine();
             hln.rct("say", in);
         } while (!in.equals("exit"));
+        System.exit(12);
     }
 
     @Remote(1)
