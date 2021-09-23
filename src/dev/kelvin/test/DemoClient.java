@@ -17,7 +17,7 @@ public class DemoClient {
             hln.rct("say", in);
         } while (!in.equals("exit"));
         hln.disconnect();
-        //System.exit(12);
+        System.exit(12);
     }
 
     @Remote(1)

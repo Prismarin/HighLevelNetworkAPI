@@ -35,6 +35,7 @@ public class Server extends NetworkParticipant {
 
     public Server(Object object, HighLevelNetworkAPI hln, int port, int maxUsers) {
         super(object, hln);
+        hln.addOnConnectionClosed(this::remove);
         this.port = port;
 
         this.maxUsers = maxUsers;

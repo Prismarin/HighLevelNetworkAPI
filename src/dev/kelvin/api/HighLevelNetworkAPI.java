@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 
 /**
  * @since 1.0
@@ -325,6 +326,10 @@ public class HighLevelNetworkAPI {
             e.onConnectionSucceeded(userId);
     }
 
+    public void removeConnectionSucceeded(IOnConnectionSucceeded onConnectionSucceeded) {
+        onConnectionSucceededList.remove(onConnectionSucceeded);
+    }
+
     /**
      *
      * <h1>Add {@link IOnConnectionFailed}</h1>
@@ -370,6 +375,10 @@ public class HighLevelNetworkAPI {
     public void triggerConnectionFailed() {
         for (IOnConnectionFailed e : onConnectionFailedList)
             e.onConnectionFailed();
+    }
+
+    public void removeConnectionFailed(IOnConnectionFailed onConnectionFailed) {
+        onConnectionFailedList.remove(onConnectionFailed);
     }
 
     /**
@@ -423,6 +432,10 @@ public class HighLevelNetworkAPI {
     public void triggerConnectionClosed(int userId) {
         for (IOnConnectionClosed e : onConnectionClosedList)
             e.onConnectionClosed(userId);
+    }
+
+    public void removeConnectionClosed(IOnConnectionClosed onConnectionClosed) {
+        onConnectionClosedList.remove(onConnectionClosed);
     }
 
     /**
@@ -531,6 +544,16 @@ public class HighLevelNetworkAPI {
             net.stop();
         } else
             throw new NullPointerException("HighLevelNetworkAPI is used as Server!");
+    }
+
+    /**
+     *
+     * resets the {@link HighLevelNetworkAPI} so it can be used again
+     *
+     * @throws ConcurrentModificationException when the net object is connected
+     */
+    public void reset() throws ConcurrentModificationException {
+        net = null;
     }
 
 }

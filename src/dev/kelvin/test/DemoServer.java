@@ -9,10 +9,8 @@ public class DemoServer {
 
     public static void main(String[] args) {
         HighLevelNetworkAPI hln = new HighLevelNetworkAPI(new DemoServer());
-        hln.addOnConnectionClosed(uuid -> {
-            System.out.println("User with id " + uuid + " disconnected!");
-        });
-        hln.createServer(1235, 100);
+        hln.addOnConnectionClosed(uuid -> System.out.println("User with id " + uuid + " disconnected!"));
+        hln.createServer(1235, 3);
         Scanner scan = new Scanner(System.in);
         String in;
         do {
