@@ -414,4 +414,33 @@ public class TreeDictBeta<K, V> {
         return node;
     }
 
+    //converts a String created with toString() method back to a TreeDict
+    public static TreeDictBeta fromString(String string){
+
+        TreeDictBeta converted_from_string;
+        int end = findEnd(string);
+        int beginning = 1;
+        Node nextnode = null;
+
+        Node firstnode = convertKeyAndValueFromString(string.substring(beginning, end));
+        converted_from_string = new TreeDictBeta(firstnode.key, firstnode.value);
+
+        while(end <= string.length()) {
+
+            beginning = end + 1;
+            if(beginning < string.length()){
+                string = string.substring(beginning);
+            } else {
+                break;
+            }
+            end = findEnd(string);
+            nextnode = convertKeyAndValueFromString(string);
+            converted_from_string.add(nextnode.key, nextnode.value);
+
+        }
+
+        return converted_from_string;
+
+    }
+
 }
