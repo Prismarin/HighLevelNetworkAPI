@@ -1,16 +1,22 @@
 package dev.beni.utils.Betas;
 
+import dev.beni.utils.Dict;
+import dev.beni.utils.Node;
+
 public class Test {
 
     public static void main(String[] args) {
-        TreeDictBeta<String, String> tdb = new TreeDictBeta<>("Hullo", "Hey");
-        tdb.add("Nice", "GG");
-        tdb.add("EZ", "NGL");
-        tdb.traverseInOrder2(tdb.root);
-        String string = tdb.toString();
-        System.out.println(string);
-        TreeDictBeta tdb2 = tdb.fromString(string);
-        tdb2.traverseInOrder2(tdb2.root);
+        Dict dict = new Dict(new Node<String, String>("msg", "Hello"));
+        dict.insert(new Node(1, "eins"));
+        dict.insert(new Node("w", "w"));
+        dict.output();
+        //System.out.println();
+        //dict.remove("msg");
+        //dict.output();
+        String string = dict.toString();
+        Dict dict2 = dict.fromString(string);
+        System.out.println("\ndict2: ");
+        dict2.output();
     }
 
 }
