@@ -1,6 +1,5 @@
 package dev.kelvin.api.network.participants.normal;
 
-import dev.beni.utils.SocketDict;
 import dev.kelvin.api.HighLevelNetworkAPI;
 import dev.kelvin.api.network.NetworkParticipant;
 import dev.kelvin.api.network.info.ConnectionInfo;

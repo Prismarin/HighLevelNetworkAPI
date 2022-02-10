@@ -1,6 +1,5 @@
 package dev.kelvin.api.network.info;
 
-import dev.beni.utils.SocketDict;
 import dev.kelvin.api.HighLevelNetworkAPI;
 import dev.kelvin.api.network.utils.Utils;
 

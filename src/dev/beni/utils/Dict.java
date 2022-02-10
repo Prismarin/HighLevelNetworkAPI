@@ -175,4 +175,8 @@ public class Dict {
         return convertedFromString;
     }
 
+    public void setValue(String key, String newValue){
+        find(key).setValue(newValue);
+    }
+
 }
