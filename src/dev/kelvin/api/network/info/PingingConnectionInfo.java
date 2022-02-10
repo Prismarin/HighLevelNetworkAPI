@@ -1,5 +1,6 @@
 package dev.kelvin.api.network.info;
 
+import dev.beni.utils.SocketDict;
 import dev.kelvin.api.HighLevelNetworkAPI;
 import dev.kelvin.api.network.utils.Utils;
 
@@ -61,9 +62,9 @@ public class PingingConnectionInfo extends ConnectionInfo {
             try {
                 String input = in.readUTF();
                 SocketDict dict = SocketDict.fromString(input);
-                if (dict.get("m").equals("//ping")) {
+                if (dict.getValue("m").equals("//ping")) {
                     unRespondedPings = 0;
-                }else if (dict.get("m").equals("//dis")) {
+                }else if (dict.getValue("m").equals("//dis")) {
                     tcpSocket.close();
                     hln.triggerConnectionClosed(userId);
                     break;

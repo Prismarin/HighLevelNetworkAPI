@@ -1,5 +1,6 @@
 package dev.kelvin.api.network.utils;
 
+import dev.beni.utils.SocketDict;
 import dev.kelvin.api.HighLevelNetworkAPI;
 import dev.kelvin.api.network.NetworkParticipant;
 
@@ -10,13 +11,13 @@ import java.net.DatagramSocket;
 public class Utils {
 
     public static void workWithReceivedData(HighLevelNetworkAPI hln, SocketDict dict) {
-        int argLength = Integer.parseInt(dict.get("s"));
+        int argLength = Integer.parseInt(dict.getValue("s"));
         String[] args = new String[argLength];
         for (int i = 0; i < argLength; i++) {
-            args[i] = dict.get("a" + i);
+            args[i] = dict.getValue("a" + i);
         }
         try {
-            hln.call(dict.get("m"), args);
+            hln.call(dict.getValue("m"), args);
         } catch (Exception e) {
             e.printStackTrace();
         }

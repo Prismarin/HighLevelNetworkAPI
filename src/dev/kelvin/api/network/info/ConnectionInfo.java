@@ -1,5 +1,6 @@
 package dev.kelvin.api.network.info;
 
+import dev.beni.utils.SocketDict;
 import dev.kelvin.api.HighLevelNetworkAPI;
 import dev.kelvin.api.network.utils.Utils;
 
@@ -44,7 +45,7 @@ public class ConnectionInfo extends Thread {
             try {
                 String input = in.readUTF();
                 SocketDict dict = SocketDict.fromString(input);
-                if (dict.get("m").equals("//dis")) {
+                if (dict.getValue("m").equals("//dis")) {
                     tcpSocket.close();
                     hln.triggerConnectionClosed(userId);
                     break;
