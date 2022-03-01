@@ -4,6 +4,7 @@ import java.io.*;
 
 public class SocketDictSaver {
 
+    /**saves the given SocketDict to the given file (adds the ending .ssd.hln automatically)**/
     public static void saveInFile(String fileNameWithoutEnding, SocketDict socketDictToBeSaved){
         try {
             String fileName = fileNameWithoutEnding + ".ssd.hln";
@@ -18,6 +19,7 @@ public class SocketDictSaver {
         }
     }
 
+    /**reads in the given file and outputs the SocketDict**/
     public static SocketDict readFromFile(String fileName){
         SocketDict readIn;
         StringBuilder readInString;

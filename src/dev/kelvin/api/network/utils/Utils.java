@@ -1,6 +1,6 @@
 package dev.kelvin.api.network.utils;
 
-import dev.beni.utils.SocketDict;
+import dev.beni.utils.SocketDictStringsOnly;
 import dev.kelvin.api.HighLevelNetworkAPI;
 import dev.kelvin.api.network.NetworkParticipant;
 
@@ -10,7 +10,7 @@ import java.net.DatagramSocket;
 
 public class Utils {
 
-    public static void workWithReceivedData(HighLevelNetworkAPI hln, SocketDict dict) {
+    public static void workWithReceivedData(HighLevelNetworkAPI hln, SocketDictStringsOnly dict) {
         int argLength = Integer.parseInt(dict.getValue("s"));
         String[] args = new String[argLength];
         for (int i = 0; i < argLength; i++) {
@@ -23,8 +23,8 @@ public class Utils {
         }
     }
 
-    public static SocketDict buildFromMethodNameAndArgs(String methodName, String[] args) {
-        SocketDict sendDict = new SocketDict("m", methodName);
+    public static SocketDictStringsOnly buildFromMethodNameAndArgs(String methodName, String[] args) {
+        SocketDictStringsOnly sendDict = new SocketDictStringsOnly("m", methodName);
         //sendDict.add("m", methodName);
         sendDict.add("s", String.valueOf(args.length));     //s == size
         for (int i = 0; i < args.length; i++) {
@@ -48,7 +48,7 @@ public class Utils {
         String msg = new String(data);
         msg = msg.substring(0, msg.indexOf(NetworkParticipant.endString));
 
-        SocketDict receiveDict = SocketDict.fromString(msg);
+        SocketDictStringsOnly receiveDict = SocketDictStringsOnly.fromString(msg);
         Utils.workWithReceivedData(hln, receiveDict);
     }
 

@@ -1,6 +1,6 @@
 package dev.kelvin.api.network.info;
 
-import dev.beni.utils.SocketDict;
+import dev.beni.utils.SocketDictStringsOnly;
 import dev.kelvin.api.HighLevelNetworkAPI;
 import dev.kelvin.api.network.utils.Utils;
 
@@ -22,7 +22,7 @@ public class PingingConnectionInfo extends ConnectionInfo {
 
     protected boolean running = true;
 
-    public static final SocketDict pingDict = new SocketDict("m", "//ping");
+    public static final SocketDictStringsOnly pingDict = new SocketDictStringsOnly("m", "//ping");
 
     public PingingConnectionInfo(HighLevelNetworkAPI hln, int userId, Socket tcpSocket, int pingFrequency, int maxUnRespondedPings) throws IOException {
         super(hln, userId, tcpSocket);
@@ -61,7 +61,7 @@ public class PingingConnectionInfo extends ConnectionInfo {
         while (running) {
             try {
                 String input = in.readUTF();
-                SocketDict dict = SocketDict.fromString(input);
+                SocketDictStringsOnly dict = SocketDictStringsOnly.fromString(input);
                 if (dict.getValue("m").equals("//ping")) {
                     unRespondedPings = 0;
                 }else if (dict.getValue("m").equals("//dis")) {

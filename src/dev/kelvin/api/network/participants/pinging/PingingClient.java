@@ -1,6 +1,6 @@
 package dev.kelvin.api.network.participants.pinging;
 
-import dev.beni.utils.SocketDict;
+import dev.beni.utils.SocketDictStringsOnly;
 import dev.kelvin.api.HighLevelNetworkAPI;
 import dev.kelvin.api.network.participants.normal.Client;
 import dev.kelvin.api.network.utils.Utils;
@@ -41,7 +41,7 @@ public class PingingClient extends Client {
         while (running) {
             try {
                 String input = in.readUTF();
-                SocketDict receiveDict = SocketDict.fromString(input);
+                SocketDictStringsOnly receiveDict = SocketDictStringsOnly.fromString(input);
                 if (receiveDict.getValue("m").equals("//ping")) {
                     rct("//ping");
                     unRespondedPings = 0;

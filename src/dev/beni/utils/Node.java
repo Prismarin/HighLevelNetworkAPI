@@ -8,6 +8,7 @@ public class Node<K, V>{
     private K key;
     public Node left, right;
 
+    /**creates a new Node*/
     public Node(K key, V value){
         this.key = key;
         this.value = value;
@@ -16,48 +17,67 @@ public class Node<K, V>{
     }
 
     //getters
+    /**outputs the Key as a String**/
     public String getKey(){
         return key.toString();
     }
 
+    /**outputs the Value as a String**/
     public String getValue(){
         return value.toString();
     }
 
+    /**outputs the data type of the Key as a String (method not in use, but it works if you need it)**/
     public String getValueType(){
         return value.getClass().getName();
     }
 
+    /**outputs the data type of the Value as a String (method not in use, but it works if you need it)**/
     public String getKeyType(){
         return key.getClass().getName();
     }
 
+    /**outputs the left successor**/
     public Node getLeft(){
         return left;
     }
 
+    /**outputs the right successor**/
     public Node getRight(){
         return right;
     }
 
-    //setters
-    public void setKey(K key){
-        this.value = value;
+    /**outputs the minimum (it is only used internally) P.S. you can declare it as public if you need to use it**/
+    private Node getMinimum(){
+        if(left == null){
+            return this;
+        }
+        return left.getMinimum();
     }
 
+    //setters
+    /**sets the Key to the given string (not used)*/
+    public void setKey(K key){
+        this.key = key;
+    }
+
+    /**sets the Value to the given string**/
     public void setValue(V value){
         this.value = value;
     }
 
+    /**sets the left successor to the given Node**/
     public void setLeft(Node left){
         this.left = left;
     }
 
+    /**sets the right successor to the given Node**/
     public void setRight(Node right){
         this.right = right;
     }
 
     //functions
+    /**inserts a new Node to the tree**/
     public void insert(Node newNode){
         if(newNode.getKey().equals(getKey())){
 
@@ -82,11 +102,13 @@ public class Node<K, V>{
         }
     }
 
+    /**converts the stored values to a string and outputs it**/
     @Override
     public String toString(){
         return getKey() + ", " + getValue();
     }
 
+    /**prints the tree inorder to the console**/
     public void output(){
         if(left != null){
             left.output();
@@ -97,6 +119,7 @@ public class Node<K, V>{
         }
     }
 
+    /**finds the Node with the given Key**/
     public Node find(String keyToBeFound){
         if(getKey().equals(keyToBeFound)){
             return this;
@@ -109,6 +132,7 @@ public class Node<K, V>{
         }
     }
 
+    /**traverses preorder through the tree and adds all the Nodes to an ArrayList**/
     public ArrayList<Node> traversePreOrder(ArrayList<Node> list){
         list.add(this);
         if(left != null){
@@ -121,6 +145,7 @@ public class Node<K, V>{
         return list;
     }
 
+    /**traverses inorder through the tree and adds all the Nodes to an ArrayList**/
     public ArrayList<Node> traverseInOrder(ArrayList<Node> list){
         if(left != null){
             list = left.traverseInOrder(list);
@@ -133,6 +158,7 @@ public class Node<K, V>{
         return list;
     }
 
+    /**outputs the predecessor of the Node with the given Key**/
     public Node predecessorTo(String key){
         if(getLeft().getKey().equals(key) || getRight().getKey().equals(key)){
             return this;
@@ -148,19 +174,31 @@ public class Node<K, V>{
         return null;
     }
 
-    public Node remove(String key){
+    /**removes the Node with the given Key**/
+    public Node delete(String key){
 
-        if(getKey().equals(key)){
-            return getRight();
-        } else {
-            if(getKey().compareToIgnoreCase(key) < 0 && right != null){
-                right = right.remove(key);
-            } else if(getKey().compareToIgnoreCase(key) > 0 && left != null){
-                left = left.remove(key);
-            }
+        if(getKey().compareToIgnoreCase(key) > 0){
+            left = left.delete(key);
             return this;
-        }
+        } else if(getKey().compareToIgnoreCase(key) < 0){
+            right = right.delete(key);
+            return this;
+        } else {
+            if(left == null && right == null){
+                return null;
+            } else if(left == null){
+                return right;
+            } else if(right == null){
+                return left;
+            } else {
+                Node newThis = right.getMinimum();
+                right = right.delete(newThis.getKey());
+                newThis.setRight(right);
+                newThis.setLeft(left);
+                return newThis;
+            }
 
+        }
     }
 
 }

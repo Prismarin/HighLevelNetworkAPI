@@ -1,6 +1,6 @@
 package dev.kelvin.api.network.participants.normal;
 
-import dev.beni.utils.SocketDict;
+import dev.beni.utils.SocketDictStringsOnly;
 import dev.kelvin.api.HighLevelNetworkAPI;
 import dev.kelvin.api.network.NetworkParticipant;
 import dev.kelvin.api.network.utils.Utils;
@@ -53,7 +53,7 @@ public class Client extends NetworkParticipant {
     @Override
     public void rcu_id(int uuid, String methodName, String... args) {
         if (uuid == 1) {
-            SocketDict sendDict = Utils.buildFromMethodNameAndArgs(methodName, args);
+            SocketDictStringsOnly sendDict = Utils.buildFromMethodNameAndArgs(methodName, args);
             byte[] data = (sendDict + endString).getBytes();
             DatagramPacket packet = new DatagramPacket(data, data.length, ip, port);
 
@@ -81,7 +81,7 @@ public class Client extends NetworkParticipant {
     @Override
     public void rct_id(int uuid, String methodName, String... args) {
         if (uuid == 1) {
-            SocketDict sendDict = Utils.buildFromMethodNameAndArgs(methodName, args);
+            SocketDictStringsOnly sendDict = Utils.buildFromMethodNameAndArgs(methodName, args);
 
             try {
                 out.writeUTF(sendDict.toString());
@@ -120,7 +120,7 @@ public class Client extends NetworkParticipant {
         while (running) {
             try {
                 String input = in.readUTF();
-                SocketDict receiveDict = SocketDict.fromString(input);
+                SocketDictStringsOnly receiveDict = SocketDictStringsOnly.fromString(input);
                 Utils.workWithReceivedData(hln, receiveDict);
             } catch (EOFException ignored) {
                 hln.triggerConnectionClosed(0);

@@ -1,6 +1,6 @@
 package dev.kelvin.api.network.participants.normal;
 
-import dev.beni.utils.SocketDict;
+import dev.beni.utils.SocketDictStringsOnly;
 import dev.kelvin.api.HighLevelNetworkAPI;
 import dev.kelvin.api.network.NetworkParticipant;
 import dev.kelvin.api.network.info.ConnectionInfo;
@@ -62,7 +62,7 @@ public class Server extends NetworkParticipant {
         } else {
             //send one
             if (doesUuidExist(uuid)) {
-                SocketDict sendDict = Utils.buildFromMethodNameAndArgs(methodName, args);
+                SocketDictStringsOnly sendDict = Utils.buildFromMethodNameAndArgs(methodName, args);
                 //should not throw exception
                 ConnectionInfo info = getInfo(uuid);
                 try {
@@ -93,7 +93,7 @@ public class Server extends NetworkParticipant {
             }
         } else {
             if (doesUuidExist(uuid)) {
-                SocketDict sendDict = Utils.buildFromMethodNameAndArgs(methodName, args);
+                SocketDictStringsOnly sendDict = Utils.buildFromMethodNameAndArgs(methodName, args);
                 ConnectionInfo info = getInfo(uuid);
                 try {
                     boolean connected = info.send(sendDict.toString());
