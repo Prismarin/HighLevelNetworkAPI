@@ -36,12 +36,12 @@ public class Demo {
         dict.insert(new Node("y", "Yak"));
 
         //prints the animals in alphabetical order to the console
-        dict.output();
         System.out.println("start dict:");
+        dict.output();
         //deletes the animal with the letter z
         dict.delete("z");
         //shows the result
-        System.out.println("after deleting:");
+        System.out.println("\nafter deleting:");
         dict.output();
         System.out.println();
         //finds a Node
@@ -49,7 +49,7 @@ public class Demo {
         //sets the value of found (from above) to Chameleon
         found.setValue("Chameleon");
         //shows the result
-        System.out.println("after changing Camel to Chameleon");
+        System.out.println("after changing Camel to Chameleon:");
         dict.output();
     }
 
