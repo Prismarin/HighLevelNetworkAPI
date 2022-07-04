@@ -64,7 +64,7 @@ public class SocketDictStringsOnly {
 
     /**converts a String made with the toString method back to a SocketDictStringsOnly**/
     public static SocketDictStringsOnly fromString(String string){
-        SocketDictStringsOnly dict1 = fromString(string);
+        SocketDictStringsOnly dict1 = SocketDict.fromString(string);
         ArrayList<Node> list = dict1.traversePreorder();
         SocketDictStringsOnly socketDictBeta = new SocketDictStringsOnly(list.get(0).getKey(), list.get(0).getValue());
         for(int i = 1; i < list.size(); i++){
